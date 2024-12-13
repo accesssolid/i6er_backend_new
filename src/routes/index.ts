@@ -1,0 +1,31 @@
+import express from 'express';
+const Route = express.Router();
+
+//admin routes
+import adminAuthRoutes from './Admin/admin.auth.route'
+import adminCommonRoutes from './Admin/admin.common.route'
+import adminUserRoutes from './Admin/admin.user.route'
+
+//user and admin all usertype common routes
+import commonRoutes from './Common/common.route'
+
+//user routes
+import userAuthRoutes from './User/user.auth.route'
+import userRoutes from './User/user.route'
+
+
+// *********assign order of routes for swagger in last to show on first **********
+
+//admin routes
+Route.use('/admin/common', adminCommonRoutes);
+Route.use('/admin/user', adminUserRoutes);
+Route.use('/admin/auth', adminAuthRoutes);
+
+//user routes
+Route.use('/user/auth', userAuthRoutes);
+Route.use('/user', userRoutes);
+
+//user and admin all usertype common routes
+Route.use('/common', commonRoutes);
+
+export default Route;
