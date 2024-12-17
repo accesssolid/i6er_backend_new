@@ -3,7 +3,7 @@ import path from 'path'
 import moment from "moment";
 import { ApiResponse } from "../../utils/interfaces.util";
 import { showResponse } from "../../utils/response.util";
-import { findOne, createOne, findByIdAndUpdate, findOneAndUpdate, findAndUpdatePushOrSet, insertMany, findOneAndDelete } from "../../helpers/db.helpers";
+import { findOne, createOne, findByIdAndUpdate, findOneAndUpdate, findAndUpdatePushOrSet, insertMany, findOneAndDelete, findAll, getCount } from "../../helpers/db.helpers";
 import { decodeToken, generateJwtToken } from "../../utils/auth.util";
 import * as commonHelper from "../../helpers/common.helper";
 import userModel from "../../models/User/user.auth.model";
@@ -14,6 +14,7 @@ import statusCodes from '../../constants/statusCodes'
 import userAllergiesModel from '../../models/User/user.allergies.model';
 import userMedicationModel from '../../models/User/user.medication.model';
 import userEmergencyContact from '../../models/User/user.emergencyContact';
+import userAuthModel from '../../models/User/user.auth.model';
 
 const infoModel = {
     [INFO_TYPE.ALLERGY]: userAllergiesModel,
@@ -115,6 +116,44 @@ const UserHandler = {
         return showResponse(true, responseMessage.common.data_retreive_sucess, { result, totalCount }, statusCodes.SUCCESS)
 
     },
+    userInfoDetails: async (data: any, user_id: string): Promise<ApiResponse> => {
+        const { item_id, type } = data
+
+        const model = infoModel[type]
+
+        const findItem = await findOne(model, { _id: item_id, user_id }, { createdAt: 0, updatedAt: 0 })
+        if (!findItem.status) {
+            return showResponse(false, responseMessage.common.invalid_id, {}, statusCodes.API_ERROR)
+        }
+
+        return showResponse(true, responseMessage.common.data_retreive_sucess, findItem?.data, statusCodes.SUCCESS)
+
+    },
+
+    userInfoMainScreen: async (user_id: string): Promise<ApiResponse> => {
+
+        const findUser = await findOne(userAuthModel, { _id: user_id }, { blood_group: 1, display_name: 1, dob: 1 })
+        if (!findUser.status) {
+            return showResponse(false, responseMessage.users.invalid_user, {}, statusCodes.API_ERROR)
+        }
+
+        const age = commonHelper.calculateAgeFromUnix(findUser.data.dob);
+
+        const medications = await findAll(userMedicationModel, { user_id }, '_id name dose reason', 2)
+        const allergies = await findAll(userAllergiesModel, { user_id }, '_id name', 2)
+        const contacts = await findAll(userEmergencyContact, { user_id }, '_id name phone email', 2)
+
+        const response = {
+            ...findUser.data,
+            age,
+            medications: medications?.data,
+            allergies: allergies?.data,
+            contacts: contacts?.data,
+        }
+
+        return showResponse(true, responseMessage.common.data_retreive_sucess, response, statusCodes.SUCCESS)
+
+    },
 
     updateAllergy: async (data: any, user_id: string): Promise<ApiResponse> => {
         const { allergy_id, name } = data
@@ -213,6 +252,45 @@ const UserHandler = {
         }
 
         return showResponse(true, responseMessage.common.delete_sucess, {}, statusCodes.SUCCESS);
+
+    },
+
+    updateSettings: async (data: any, user_id: string): Promise<ApiResponse> => {
+        const { display_dob, send_sms, allow_gps, allow_multi_contact, dark_mode } = data
+
+        if (allow_multi_contact !== undefined && !allow_multi_contact) {
+            const count = await getCount(userEmergencyContact, { user_id })
+            //if multiple contacts are present and wants to off multiple contacts then throw error message
+            if (count?.data > 1) {
+                return showResponse(false, 'multiple contacts are already present delete them first', null, statusCodes.API_ERROR);
+            }
+        }
+
+        const updateObj: any = {}
+
+        // Check if each setting is present in the input data and add it to the update object
+        if (display_dob !== undefined) {
+            updateObj['settings.display_dob'] = display_dob;
+        }
+        if (send_sms !== undefined) {
+            updateObj['settings.send_sms'] = send_sms;
+        }
+        if (allow_gps !== undefined) {
+            updateObj['settings.allow_gps'] = allow_gps;
+        }
+        if (allow_multi_contact !== undefined) {
+            updateObj['settings.allow_multi_contact'] = allow_multi_contact;
+        }
+        if (dark_mode !== undefined) {
+            updateObj['settings.dark_mode'] = dark_mode;
+        }
+
+        const result = await findByIdAndUpdate(userAuthModel, updateObj, user_id);
+        if (!result.status) {
+            return showResponse(false, responseMessage.common.update_failed, null, statusCodes.API_ERROR);
+        }
+
+        return showResponse(true, responseMessage.common.update_sucess, result.data, statusCodes.SUCCESS);
 
     },
 

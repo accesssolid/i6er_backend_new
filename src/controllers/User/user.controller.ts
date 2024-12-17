@@ -5,7 +5,7 @@ import handler from '../../handlers/User/user.handler'
 import { showResponse } from '../../utils/response.util';
 import statusCodes from '../../constants/statusCodes'
 import { tryCatchWrapper } from '../../utils/config.util';
-import { validateAddAllergy, validateAddEmergencyContact, validateAddMedication, validateDeleteUserInfo, validateUpdateAllergy, validateUpdateEmergencyContact, validateUpdateMedication, validateUserInfoList } from '../../validations/User/user.validator';
+import { validateAddAllergy, validateAddEmergencyContact, validateAddMedication, validateDeleteUserInfo, validateUpdateAllergy, validateUpdateEmergencyContact, validateUpdateMedication, validateUpdateSetting, validateUserInfoDetails, validateUserInfoList } from '../../validations/User/user.validator';
 
 @Tags('User Routes')
 @Route('/user')
@@ -95,6 +95,38 @@ export default class UserController extends Controller {
     //ends
 
     /**
+   * Details User Info Medics And other
+   * type == 'allergy', 'medication', 'contacts'
+   *
+   */
+    @Security('Bearer')
+    @Get("/info/details")
+    public async userInfoDetails(@Query() item_id: string, @Query() type: string): Promise<ApiResponse> {
+        const body = { item_id, type }
+
+        const validate = validateUserInfoDetails(body);
+        if (validate.error) {
+            return showResponse(false, validate.error.message, null, statusCodes.VALIDATION_ERROR)
+        }
+
+        const wrappedFunc = tryCatchWrapper(handler.userInfoDetails);
+        return wrappedFunc(body, this.userId); // Invoking the wrapped function 
+    }
+    //ends
+
+    /**
+   *  User Info Screen Api Medics And other
+   *
+   */
+    @Security('Bearer')
+    @Get("/info/screen")
+    public async userInfoMainScreen(): Promise<ApiResponse> {
+        const wrappedFunc = tryCatchWrapper(handler.userInfoMainScreen);
+        return wrappedFunc(this.userId); // Invoking the wrapped function 
+    }
+    //ends
+
+    /**
 * Update User Allergy
 */
     @Security('Bearer')
@@ -165,7 +197,22 @@ export default class UserController extends Controller {
     }
     //ends
 
+    /**
+* Update User Settings
+*/
+    @Security('Bearer')
+    @Put("/setting/update")
+    public async updateSettings(@Body() request: { display_dob: boolean, send_sms: boolean, allow_gps: boolean, allow_multi_contact: boolean, dark_mode: boolean }): Promise<ApiResponse> {
 
+        const validate = validateUpdateSetting(request);
+        if (validate.error) {
+            return showResponse(false, validate.error.message, null, statusCodes.VALIDATION_ERROR)
+        }
+
+        const wrappedFunc = tryCatchWrapper(handler.updateSettings);
+        return wrappedFunc(request, this.userId); // Invoking the wrapped function 
+    }
+    //ends
 
 
 

@@ -11,6 +11,11 @@ const userInfoListSchema = joi.object({
     search_key: joi.string().optional().allow(''),
 })
 
+const userInfoDetailsSchema = joi.object({
+    item_id: joi.string().required(),
+    type: joi.string().valid(...infoValues).required(),
+})
+
 const deleteUserInfo = joi.object({
     item_id: joi.string().required(),
     type: joi.string().valid(...infoValues).required(),
@@ -37,6 +42,14 @@ const updateAllergy = joi.object({
     name: joi.string().optional().allow(''),
 })
 
+const updateSetting = joi.object({
+    display_dob: joi.boolean().optional().allow(''),
+    send_sms: joi.boolean().optional().allow(''),
+    allow_gps: joi.boolean().optional().allow(''),
+    allow_multi_contact: joi.boolean().optional().allow(''),
+    dark_mode: joi.boolean().optional().allow(''),
+})
+
 const updateMedication = joi.object({
     medication_id: joi.string().required(),
     name: joi.string().optional().allow(''),
@@ -54,6 +67,10 @@ const updateEmergencyContact = joi.object({
 
 export const validateUserInfoList = (user: any) => {
     return userInfoListSchema.validate(user)
+}
+
+export const validateUserInfoDetails = (user: any) => {
+    return userInfoDetailsSchema.validate(user)
 }
 
 export const validateDeleteUserInfo = (user: any) => {
@@ -74,6 +91,10 @@ export const validateAddEmergencyContact = (user: any) => {
 
 export const validateUpdateAllergy = (user: any) => {
     return updateAllergy.validate(user)
+}
+
+export const validateUpdateSetting = (user: any) => {
+    return updateSetting.validate(user)
 }
 
 export const validateUpdateMedication = (user: any) => {

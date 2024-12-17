@@ -395,6 +395,26 @@ const formatDateTOMonthDayYear = (unixTimestamp: number): string => {
     return `${month}-${day}-${year}`;
 }
 
+function calculateAgeFromUnix(unixTimestamp: number) {
+    // Convert the Unix timestamp to a Date object
+    const birthDate = new Date(unixTimestamp * 1000); // Unix timestamp is in seconds, so multiply by 1000 to convert to milliseconds
+
+    // Get the current date
+    const currentDate = new Date();
+
+    // Calculate the age by comparing the year of the birthdate with the current date
+    let age = currentDate.getFullYear() - birthDate.getFullYear();
+    const monthDifference = currentDate.getMonth() - birthDate.getMonth();
+
+    // Adjust the age if the birthday hasn't occurred yet this year
+    if (monthDifference < 0 || (monthDifference === 0 && currentDate.getDate() < birthDate.getDate())) {
+        age--;
+    }
+
+    return age;
+}
+
+
 export {
     bycrptPasswordHash,
     verifyBycryptHash,
@@ -422,5 +442,6 @@ export {
     cleanCurrency,
     generateTenDigitNumber,
     generateRandomAlphanumeric,
-    formatDateTOMonthDayYear
+    formatDateTOMonthDayYear,
+    calculateAgeFromUnix
 }

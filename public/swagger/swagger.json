@@ -332,6 +332,77 @@
 				]
 			}
 		},
+		"/user/info/details": {
+			"get": {
+				"operationId": "UserInfoDetails",
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ApiResponse"
+								}
+							}
+						}
+					}
+				},
+				"description": "Details User Info Medics And other\ntype == 'allergy', 'medication', 'contacts'",
+				"tags": [
+					"User Routes"
+				],
+				"security": [
+					{
+						"Bearer": []
+					}
+				],
+				"parameters": [
+					{
+						"in": "query",
+						"name": "item_id",
+						"required": true,
+						"schema": {
+							"type": "string"
+						}
+					},
+					{
+						"in": "query",
+						"name": "type",
+						"required": true,
+						"schema": {
+							"type": "string"
+						}
+					}
+				]
+			}
+		},
+		"/user/info/screen": {
+			"get": {
+				"operationId": "UserInfoMainScreen",
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ApiResponse"
+								}
+							}
+						}
+					}
+				},
+				"description": "User Info Screen Api Medics And other",
+				"tags": [
+					"User Routes"
+				],
+				"security": [
+					{
+						"Bearer": []
+					}
+				],
+				"parameters": []
+			}
+		},
 		"/user/allergy/update": {
 			"put": {
 				"operationId": "UpdateAllergy",
@@ -536,6 +607,67 @@
 								"required": [
 									"type",
 									"item_id"
+								],
+								"type": "object"
+							}
+						}
+					}
+				}
+			}
+		},
+		"/user/setting/update": {
+			"put": {
+				"operationId": "UpdateSettings",
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ApiResponse"
+								}
+							}
+						}
+					}
+				},
+				"description": "Update User Settings",
+				"tags": [
+					"User Routes"
+				],
+				"security": [
+					{
+						"Bearer": []
+					}
+				],
+				"parameters": [],
+				"requestBody": {
+					"required": true,
+					"content": {
+						"application/json": {
+							"schema": {
+								"properties": {
+									"dark_mode": {
+										"type": "boolean"
+									},
+									"allow_multi_contact": {
+										"type": "boolean"
+									},
+									"allow_gps": {
+										"type": "boolean"
+									},
+									"send_sms": {
+										"type": "boolean"
+									},
+									"display_dob": {
+										"type": "boolean"
+									}
+								},
+								"required": [
+									"dark_mode",
+									"allow_multi_contact",
+									"allow_gps",
+									"send_sms",
+									"display_dob"
 								],
 								"type": "object"
 							}

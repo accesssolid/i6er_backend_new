@@ -36,6 +36,20 @@ router.get("/info/list", verifyTokenUser, async (req: Request | any, res: Respon
     return showOutput(res, result, result.code)
 })
 
+router.get("/info/details", verifyTokenUser, async (req: Request | any, res: Response) => {
+    const { item_id, type } = req.query; //default show the new jobs only 
+    const controller = new UserController(req, res)
+    const result: ApiResponse = await controller.userInfoDetails(item_id, type);
+    return showOutput(res, result, result.code)
+})
+
+router.get("/info/screen", verifyTokenUser, async (req: Request | any, res: Response) => {
+    const controller = new UserController(req, res)
+    const result: ApiResponse = await controller.userInfoMainScreen();
+    return showOutput(res, result, result.code)
+})
+
+
 
 router.put('/allergy/update', verifyTokenUser, async (req: Request | any, res: Response) => {
     const { allergy_id, name } = req.body
@@ -64,6 +78,15 @@ router.delete('/info/delete', verifyTokenUser, async (req: Request | any, res: R
     const result: ApiResponse = await controller.deleteUserInfo({ item_id, type });
     return showOutput(res, result, result.code)
 })
+
+
+router.put('/setting/update', verifyTokenUser, async (req: Request | any, res: Response) => {
+    const { display_dob, send_sms, allow_gps, allow_multi_contact, dark_mode } = req.body
+    const controller = new UserController(req, res)
+    const result: ApiResponse = await controller.updateSettings({ display_dob, send_sms, allow_gps, allow_multi_contact, dark_mode });
+    return showOutput(res, result, result.code)
+})
+
 
 
 
