@@ -8,26 +8,48 @@ const { multer } = middlewares.fileUpload
 
 const router = express.Router()
 
-router.post('/allergy/add', verifyTokenUser, async (req: Request | any, res: Response) => {
-    const { name } = req.body
+router.put('/allergy/add/update', verifyTokenUser, async (req: Request | any, res: Response) => {
+    const { allergies } = req.body
     const controller = new UserController(req, res)
-    const result: ApiResponse = await controller.addAllergy({ name });
+    const result: ApiResponse = await controller.addOrUpdateAllergy({ allergies });
     return showOutput(res, result, result.code)
 })
 
-router.post('/medication/add', verifyTokenUser, async (req: Request | any, res: Response) => {
-    const { name, dose, reason } = req.body
+router.put('/medication/add/update', verifyTokenUser, async (req: Request | any, res: Response) => {
+    const { medications } = req.body
     const controller = new UserController(req, res)
-    const result: ApiResponse = await controller.addMedication({ name, dose, reason });
+    const result: ApiResponse = await controller.addOrUpdateMedication({ medications });
     return showOutput(res, result, result.code)
 })
 
-router.post('/contact/add', verifyTokenUser, async (req: Request | any, res: Response) => {
-    const { name, phone, email } = req.body
+router.put('/contact/add/update', verifyTokenUser, async (req: Request | any, res: Response) => {
+    const { contacts } = req.body
     const controller = new UserController(req, res)
-    const result: ApiResponse = await controller.addEmergencyContact({ name, phone, email });
+    const result: ApiResponse = await controller.addOrUpdateEmergencyContact({ contacts });
     return showOutput(res, result, result.code)
 })
+
+
+// router.post('/allergy/add', verifyTokenUser, async (req: Request | any, res: Response) => {
+//     const { name } = req.body
+//     const controller = new UserController(req, res)
+//     const result: ApiResponse = await controller.addAllergy({ name });
+//     return showOutput(res, result, result.code)
+// })
+
+// router.post('/medication/add', verifyTokenUser, async (req: Request | any, res: Response) => {
+//     const { name, dose, reason } = req.body
+//     const controller = new UserController(req, res)
+//     const result: ApiResponse = await controller.addMedication({ name, dose, reason });
+//     return showOutput(res, result, result.code)
+// })
+
+// router.post('/contact/add', verifyTokenUser, async (req: Request | any, res: Response) => {
+//     const { name, phone, email } = req.body
+//     const controller = new UserController(req, res)
+//     const result: ApiResponse = await controller.addEmergencyContact({ name, phone, email });
+//     return showOutput(res, result, result.code)
+// })
 
 router.get("/info/list", verifyTokenUser, async (req: Request | any, res: Response) => {
     const { type, sort_column, sort_direction, page, limit, search_key } = req.query; //default show the new jobs only 
@@ -51,26 +73,26 @@ router.get("/info/screen", verifyTokenUser, async (req: Request | any, res: Resp
 
 
 
-router.put('/allergy/update', verifyTokenUser, async (req: Request | any, res: Response) => {
-    const { allergy_id, name } = req.body
-    const controller = new UserController(req, res)
-    const result: ApiResponse = await controller.updateAllergy({ allergy_id, name });
-    return showOutput(res, result, result.code)
-})
+// router.put('/allergy/update', verifyTokenUser, async (req: Request | any, res: Response) => {
+//     const { allergy_id, name } = req.body
+//     const controller = new UserController(req, res)
+//     const result: ApiResponse = await controller.updateAllergy({ allergy_id, name });
+//     return showOutput(res, result, result.code)
+// })
 
-router.put('/medication/update', verifyTokenUser, async (req: Request | any, res: Response) => {
-    const { medication_id, name, dose, reason } = req.body
-    const controller = new UserController(req, res)
-    const result: ApiResponse = await controller.updateMedication({ medication_id, name, dose, reason });
-    return showOutput(res, result, result.code)
-})
+// router.put('/medication/update', verifyTokenUser, async (req: Request | any, res: Response) => {
+//     const { medication_id, name, dose, reason } = req.body
+//     const controller = new UserController(req, res)
+//     const result: ApiResponse = await controller.updateMedication({ medication_id, name, dose, reason });
+//     return showOutput(res, result, result.code)
+// })
 
-router.put('/contact/update', verifyTokenUser, async (req: Request | any, res: Response) => {
-    const { contact_id, name, phone, email } = req.body
-    const controller = new UserController(req, res)
-    const result: ApiResponse = await controller.updateEmergencyContact({ contact_id, name, phone, email });
-    return showOutput(res, result, result.code)
-})
+// router.put('/contact/update', verifyTokenUser, async (req: Request | any, res: Response) => {
+//     const { contact_id, name, phone, email } = req.body
+//     const controller = new UserController(req, res)
+//     const result: ApiResponse = await controller.updateEmergencyContact({ contact_id, name, phone, email });
+//     return showOutput(res, result, result.code)
+// })
 
 router.delete('/info/delete', verifyTokenUser, async (req: Request | any, res: Response) => {
     const { item_id, type } = req.body

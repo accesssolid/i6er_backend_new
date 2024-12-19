@@ -21,26 +21,34 @@ const deleteUserInfo = joi.object({
     type: joi.string().valid(...infoValues).required(),
 })
 
-const addAllergy = joi.object({
-    name: joi.string().required(),
+// const addAllergy = joi.object({
+//     name: joi.string().required(),
+// })
+
+// const addMedication = joi.object({
+//     name: joi.string().required(),
+//     dose: joi.string().required(),
+//     reason: joi.string().required(),
+// })
+
+// const addEmergencyContact = joi.object({
+//     name: joi.string().required(),
+//     phone: joi.string().required(),
+//     email: joi.string().required(),
+// })
+
+// const updateAllergy = joi.object({
+//     allergy_id: joi.string().required(),
+//     name: joi.string().optional().allow(''),
+// })
+
+const addOrUpdateAllergy = joi.object({
+    allergies: joi.array().items({
+        _id: joi.string().optional().allow(''),
+        name: joi.string().required(),
+    })
 })
 
-const addMedication = joi.object({
-    name: joi.string().required(),
-    dose: joi.string().required(),
-    reason: joi.string().required(),
-})
-
-const addEmergencyContact = joi.object({
-    name: joi.string().required(),
-    phone: joi.string().required(),
-    email: joi.string().required(),
-})
-
-const updateAllergy = joi.object({
-    allergy_id: joi.string().required(),
-    name: joi.string().optional().allow(''),
-})
 
 const updateSetting = joi.object({
     display_dob: joi.boolean().optional().allow(''),
@@ -50,19 +58,38 @@ const updateSetting = joi.object({
     dark_mode: joi.boolean().optional().allow(''),
 })
 
-const updateMedication = joi.object({
-    medication_id: joi.string().required(),
-    name: joi.string().optional().allow(''),
-    dose: joi.string().optional().allow(''),
-    reason: joi.string().optional().allow(''),
+const addOrUpdateMedications = joi.object({
+    medications: joi.array().items({
+        _id: joi.string().optional().allow(''),
+        name: joi.string().required(),
+        dose: joi.string().required(),
+        reason: joi.string().required(),
+    })
 })
 
-const updateEmergencyContact = joi.object({
-    contact_id: joi.string().required(),
-    name: joi.string().optional().allow(''),
-    phone: joi.string().optional().allow(''),
-    email: joi.string().optional().allow(''),
+const addOrUpdateContacts = joi.object({
+    contacts: joi.array().items({
+        _id: joi.string().optional().allow(''),
+        name: joi.string().required(),
+        phone: joi.string().required(),
+        email: joi.string().required(),
+    })
 })
+
+
+// const updateMedication = joi.object({
+//     medication_id: joi.string().required(),
+//     name: joi.string().optional().allow(''),
+//     dose: joi.string().optional().allow(''),
+//     reason: joi.string().optional().allow(''),
+// })
+
+// const updateEmergencyContact = joi.object({
+//     contact_id: joi.string().required(),
+//     name: joi.string().optional().allow(''),
+//     phone: joi.string().optional().allow(''),
+//     email: joi.string().optional().allow(''),
+// })
 
 
 export const validateUserInfoList = (user: any) => {
@@ -77,31 +104,43 @@ export const validateDeleteUserInfo = (user: any) => {
     return deleteUserInfo.validate(user)
 }
 
-export const validateAddAllergy = (user: any) => {
-    return addAllergy.validate(user)
+export const validateAddUpdateAllergy = (user: any) => {
+    return addOrUpdateAllergy.validate(user)
 }
 
-export const validateAddMedication = (user: any) => {
-    return addMedication.validate(user)
+export const validateAddUpdateMedications = (user: any) => {
+    return addOrUpdateMedications.validate(user)
 }
 
-export const validateAddEmergencyContact = (user: any) => {
-    return addEmergencyContact.validate(user)
+export const validateAddUpdateContacts = (user: any) => {
+    return addOrUpdateContacts.validate(user)
 }
 
-export const validateUpdateAllergy = (user: any) => {
-    return updateAllergy.validate(user)
-}
+// export const validateAddAllergy = (user: any) => {
+//     return addAllergy.validate(user)
+// }
+
+// export const validateAddMedication = (user: any) => {
+//     return addMedication.validate(user)
+// }
+
+// export const validateAddEmergencyContact = (user: any) => {
+//     return addEmergencyContact.validate(user)
+// }
+
+// export const validateUpdateAllergy = (user: any) => {
+//     return updateAllergy.validate(user)
+// }
 
 export const validateUpdateSetting = (user: any) => {
     return updateSetting.validate(user)
 }
 
-export const validateUpdateMedication = (user: any) => {
-    return updateMedication.validate(user)
-}
+// export const validateUpdateMedication = (user: any) => {
+//     return updateMedication.validate(user)
+// }
 
-export const validateUpdateEmergencyContact = (user: any) => {
-    return updateEmergencyContact.validate(user)
-}
+// export const validateUpdateEmergencyContact = (user: any) => {
+//     return updateEmergencyContact.validate(user)
+// }
 

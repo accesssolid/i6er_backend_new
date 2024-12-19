@@ -17,9 +17,9 @@ router.post('/login', async (req: Request | any, res: Response) => {
 
 
 router.post('/register', async (req: Request | any, res: Response) => {
-    const { display_name, first_name, last_name, email, password, dob, blood_group, allergies, medications, emergency_contacts } = req.body;
+    const { display_name, email, password } = req.body;
     const controller = new UserAuthController(req, res)
-    const result: ApiResponse = await controller.register({ display_name, first_name, last_name, email, password, dob, blood_group, allergies, medications, emergency_contacts });
+    const result: ApiResponse = await controller.register({ display_name, email, password });
     return showOutput(res, result, result.code)
 })
 

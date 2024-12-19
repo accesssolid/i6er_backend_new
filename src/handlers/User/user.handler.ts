@@ -3,7 +3,7 @@ import path from 'path'
 import moment from "moment";
 import { ApiResponse } from "../../utils/interfaces.util";
 import { showResponse } from "../../utils/response.util";
-import { findOne, createOne, findByIdAndUpdate, findOneAndUpdate, findAndUpdatePushOrSet, insertMany, findOneAndDelete, findAll, getCount } from "../../helpers/db.helpers";
+import { findOne, createOne, findByIdAndUpdate, findOneAndUpdate, findAndUpdatePushOrSet, insertMany, findOneAndDelete, findAll, getCount, deleteMany } from "../../helpers/db.helpers";
 import { decodeToken, generateJwtToken } from "../../utils/auth.util";
 import * as commonHelper from "../../helpers/common.helper";
 import userModel from "../../models/User/user.auth.model";
@@ -24,65 +24,146 @@ const infoModel = {
 
 const UserHandler = {
 
-    addAllergy: async (data: any, user_id: string): Promise<ApiResponse> => {
-        const { name } = data
+    addOrUpdateAllergy: async (data: any, user_id: string): Promise<ApiResponse> => {
+        const { allergies } = data
 
-        const find = await findOne(userAllergiesModel, { name, user_id })
-        if (find.status) {
-            return showResponse(false, responseMessage.common.already_existed, null, statusCodes.API_ERROR);
-        }
+        let inserted: any
 
-        data.user_id = user_id
-        const ref = new userAllergiesModel(data)
-        const result = await createOne(ref)
-        if (!result.status) {
-            return showResponse(false, responseMessage.common.added_err, null, statusCodes.API_ERROR);
-        }
+        if (allergies && allergies.length > 0) {
 
-        return showResponse(true, responseMessage.common.added_success, result.data, statusCodes.SUCCESS);
+            const payload = allergies.map((allergy: any) => {
+                const { _id, ...rest } = allergy; // Exclude _id from the object
+                return { ...rest, user_id }; // Add user_id to the remaining fields
+            });
 
-    },
-    addMedication: async (data: any, user_id: string): Promise<ApiResponse> => {
-        const { name } = data
 
-        const find = await findOne(userMedicationModel, { name, user_id })
-        if (find.status) {
-            return showResponse(false, `${name} ${responseMessage.common.already_existed}`, null, statusCodes.API_ERROR);
-        }
+            //delete previous trades and replace by new trades
+            const deletedAll = await deleteMany(userAllergiesModel, { user_id })
+            if (deletedAll.status) {
+                const inserted = await insertMany(userAllergiesModel, payload)
+                if (!inserted.status) {
+                    return showResponse(false, responseMessage.users.user_account_update_error, null, statusCodes.API_ERROR);
+                }
+            }//ends
 
-        data.user_id = user_id
-        const ref = new userMedicationModel(data)
-        const result = await createOne(ref)
-        if (!result.status) {
-            return showResponse(false, responseMessage.common.added_err, null, statusCodes.API_ERROR);
-        }
+        }//ends
 
-        return showResponse(true, responseMessage.common.added_success, result.data, statusCodes.SUCCESS);
+        return showResponse(true, responseMessage.common.update_sucess, inserted?.data, statusCodes.SUCCESS);
 
     },
+    addOrUpdateMedication: async (data: any, user_id: string): Promise<ApiResponse> => {
+        const { medications, } = data
 
-    addEmergencyContact: async (data: any, user_id: string): Promise<ApiResponse> => {
-        const { name, phone, email } = data
+        let inserted: any
 
-        const find = await findOne(userEmergencyContact, { email, user_id })
-        if (find.status) {
-            return showResponse(false, `email ${responseMessage.common.already_existed}`, null, statusCodes.API_ERROR);
-        }
+        if (medications && medications.length > 0) {
 
-        if (find.data?.phone === phone) {
-            return showResponse(false, `phone ${responseMessage.common.already_existed}`, null, statusCodes.API_ERROR);
-        }
+            const payload = medications.map((medic: any) => {
+                const { _id, ...rest } = medic; // Exclude _id from the object
+                return { ...rest, user_id }; // Add user_id to the remaining fields
+            });
 
-        data.user_id = user_id
-        const ref = new userEmergencyContact(data)
-        const result = await createOne(ref)
-        if (!result.status) {
-            return showResponse(false, responseMessage.common.added_err, null, statusCodes.API_ERROR);
-        }
+            //delete previous trades and replace by new trades
+            const deletedAll = await deleteMany(userMedicationModel, { user_id })
+            if (deletedAll.status) {
+                const inserted = await insertMany(userMedicationModel, payload)
+                if (!inserted.status) {
+                    return showResponse(false, responseMessage.users.user_account_update_error, null, statusCodes.API_ERROR);
+                }
+            }//ends
 
-        return showResponse(true, responseMessage.common.added_success, result.data, statusCodes.SUCCESS);
+        }//ends
+
+        return showResponse(true, responseMessage.common.update_sucess, inserted?.data, statusCodes.SUCCESS);
 
     },
+
+    addOrUpdateEmergencyContact: async (data: any, user_id: string): Promise<ApiResponse> => {
+        const { contacts } = data
+
+        let inserted: any
+
+        if (contacts && contacts.length > 0) {
+
+            const payload = contacts.map((conta: any) => {
+                const { _id, ...rest } = conta; // Exclude _id from the object
+                return { ...rest, user_id }; // Add user_id to the remaining fields
+            });
+
+            //delete previous trades and replace by new trades
+            const deletedAll = await deleteMany(userEmergencyContact, { user_id })
+            if (deletedAll.status) {
+                const inserted = await insertMany(userEmergencyContact, payload)
+                if (!inserted.status) {
+                    return showResponse(false, responseMessage.users.user_account_update_error, null, statusCodes.API_ERROR);
+                }
+            }//ends
+
+        }//ends
+
+        return showResponse(true, responseMessage.common.update_sucess, inserted?.data, statusCodes.SUCCESS);
+
+    },
+
+    // addAllergy: async (data: any, user_id: string): Promise<ApiResponse> => {
+    //     const { name } = data
+
+    //     const find = await findOne(userAllergiesModel, { name, user_id })
+    //     if (find.status) {
+    //         return showResponse(false, responseMessage.common.already_existed, null, statusCodes.API_ERROR);
+    //     }
+
+    //     data.user_id = user_id
+    //     const ref = new userAllergiesModel(data)
+    //     const result = await createOne(ref)
+    //     if (!result.status) {
+    //         return showResponse(false, responseMessage.common.added_err, null, statusCodes.API_ERROR);
+    //     }
+
+    //     return showResponse(true, responseMessage.common.added_success, result.data, statusCodes.SUCCESS);
+
+    // },
+    // addMedication: async (data: any, user_id: string): Promise<ApiResponse> => {
+    //     const { name } = data
+
+    //     const find = await findOne(userMedicationModel, { name, user_id })
+    //     if (find.status) {
+    //         return showResponse(false, `${name} ${responseMessage.common.already_existed}`, null, statusCodes.API_ERROR);
+    //     }
+
+    //     data.user_id = user_id
+    //     const ref = new userMedicationModel(data)
+    //     const result = await createOne(ref)
+    //     if (!result.status) {
+    //         return showResponse(false, responseMessage.common.added_err, null, statusCodes.API_ERROR);
+    //     }
+
+    //     return showResponse(true, responseMessage.common.added_success, result.data, statusCodes.SUCCESS);
+
+    // },
+
+    // addEmergencyContact: async (data: any, user_id: string): Promise<ApiResponse> => {
+    //     const { name, phone, email } = data
+
+    //     const find = await findOne(userEmergencyContact, { email, user_id })
+    //     if (find.status) {
+    //         return showResponse(false, `email ${responseMessage.common.already_existed}`, null, statusCodes.API_ERROR);
+    //     }
+
+    //     if (find.data?.phone === phone) {
+    //         return showResponse(false, `phone ${responseMessage.common.already_existed}`, null, statusCodes.API_ERROR);
+    //     }
+
+    //     data.user_id = user_id
+    //     const ref = new userEmergencyContact(data)
+    //     const result = await createOne(ref)
+    //     if (!result.status) {
+    //         return showResponse(false, responseMessage.common.added_err, null, statusCodes.API_ERROR);
+    //     }
+
+    //     return showResponse(true, responseMessage.common.added_success, result.data, statusCodes.SUCCESS);
+
+    // },
 
     userInfoList: async (data: any, user_id: string): Promise<ApiResponse> => {
         const { type, sort_column = "createdAt", sort_direction = "desc", page, limit, search_key = "" } = data
@@ -155,85 +236,85 @@ const UserHandler = {
 
     },
 
-    updateAllergy: async (data: any, user_id: string): Promise<ApiResponse> => {
-        const { allergy_id, name } = data
+    // updateAllergy: async (data: any, user_id: string): Promise<ApiResponse> => {
+    //     const { allergy_id, name } = data
 
-        const find = await findOne(userAllergiesModel, { _id: allergy_id, user_id })
-        if (!find.status) {
-            return showResponse(false, responseMessage.common.invalid_id, null, statusCodes.API_ERROR);
-        }
+    //     const find = await findOne(userAllergiesModel, { _id: allergy_id, user_id })
+    //     if (!find.status) {
+    //         return showResponse(false, responseMessage.common.invalid_id, null, statusCodes.API_ERROR);
+    //     }
 
-        const updateObj: any = {}
+    //     const updateObj: any = {}
 
-        if (name) {
-            updateObj.name = name
-        }
+    //     if (name) {
+    //         updateObj.name = name
+    //     }
 
-        const result = await findByIdAndUpdate(userAllergiesModel, updateObj, allergy_id);
-        if (!result.status) {
-            return showResponse(false, responseMessage.common.update_failed, null, statusCodes.API_ERROR);
-        }
+    //     const result = await findByIdAndUpdate(userAllergiesModel, updateObj, allergy_id);
+    //     if (!result.status) {
+    //         return showResponse(false, responseMessage.common.update_failed, null, statusCodes.API_ERROR);
+    //     }
 
-        return showResponse(true, responseMessage.common.update_sucess, result.data, statusCodes.SUCCESS);
+    //     return showResponse(true, responseMessage.common.update_sucess, result.data, statusCodes.SUCCESS);
 
-    },
-    updateMedication: async (data: any, user_id: string): Promise<ApiResponse> => {
-        const { medication_id, name, dose, reason } = data
+    // },
+    // updateMedication: async (data: any, user_id: string): Promise<ApiResponse> => {
+    //     const { medication_id, name, dose, reason } = data
 
-        const find = await findOne(userMedicationModel, { _id: medication_id, user_id })
-        if (!find.status) {
-            return showResponse(false, responseMessage.common.invalid_id, null, statusCodes.API_ERROR);
-        }
+    //     const find = await findOne(userMedicationModel, { _id: medication_id, user_id })
+    //     if (!find.status) {
+    //         return showResponse(false, responseMessage.common.invalid_id, null, statusCodes.API_ERROR);
+    //     }
 
-        const updateObj: any = {}
+    //     const updateObj: any = {}
 
-        if (name) {
-            updateObj.name = name
-        }
-        if (dose) {
-            updateObj.dose = dose
-        }
-        if (reason) {
-            updateObj.reason = reason
-        }
+    //     if (name) {
+    //         updateObj.name = name
+    //     }
+    //     if (dose) {
+    //         updateObj.dose = dose
+    //     }
+    //     if (reason) {
+    //         updateObj.reason = reason
+    //     }
 
-        const result = await findByIdAndUpdate(userMedicationModel, updateObj, medication_id);
-        if (!result.status) {
-            return showResponse(false, responseMessage.common.update_failed, null, statusCodes.API_ERROR);
-        }
+    //     const result = await findByIdAndUpdate(userMedicationModel, updateObj, medication_id);
+    //     if (!result.status) {
+    //         return showResponse(false, responseMessage.common.update_failed, null, statusCodes.API_ERROR);
+    //     }
 
-        return showResponse(true, responseMessage.common.update_sucess, result.data, statusCodes.SUCCESS);
+    //     return showResponse(true, responseMessage.common.update_sucess, result.data, statusCodes.SUCCESS);
 
-    },
+    // },
 
-    updateEmergencyContact: async (data: any, user_id: string): Promise<ApiResponse> => {
-        const { contact_id, name, phone, email } = data
+    // updateEmergencyContact: async (data: any, user_id: string): Promise<ApiResponse> => {
+    //     const { contact_id, name, phone, email } = data
 
-        const find = await findOne(userEmergencyContact, { _id: contact_id, user_id })
-        if (!find.status) {
-            return showResponse(false, responseMessage.common.invalid_id, null, statusCodes.API_ERROR);
-        }
+    //     const find = await findOne(userEmergencyContact, { _id: contact_id, user_id })
+    //     if (!find.status) {
+    //         return showResponse(false, responseMessage.common.invalid_id, null, statusCodes.API_ERROR);
+    //     }
 
-        const updateObj: any = {}
+    //     const updateObj: any = {}
 
-        if (name) {
-            updateObj.name = name
-        }
-        if (phone) {
-            updateObj.phone = phone
-        }
-        if (email) {
-            updateObj.email = email
-        }
+    //     if (name) {
+    //         updateObj.name = name
+    //     }
+    //     if (phone) {
+    //         updateObj.phone = phone
+    //     }
+    //     if (email) {
+    //         updateObj.email = email
+    //     }
 
-        const result = await findByIdAndUpdate(userEmergencyContact, updateObj, contact_id);
-        if (!result.status) {
-            return showResponse(false, responseMessage.common.update_failed, null, statusCodes.API_ERROR);
-        }
+    //     const result = await findByIdAndUpdate(userEmergencyContact, updateObj, contact_id);
+    //     if (!result.status) {
+    //         return showResponse(false, responseMessage.common.update_failed, null, statusCodes.API_ERROR);
+    //     }
 
-        return showResponse(true, responseMessage.common.update_sucess, result.data, statusCodes.SUCCESS);
+    //     return showResponse(true, responseMessage.common.update_sucess, result.data, statusCodes.SUCCESS);
 
-    },
+    // },
 
     deleteUserInfo: async (data: any, user_id: string): Promise<ApiResponse> => {
         const { item_id, type } = data

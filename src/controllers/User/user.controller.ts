@@ -5,8 +5,9 @@ import handler from '../../handlers/User/user.handler'
 import { showResponse } from '../../utils/response.util';
 import statusCodes from '../../constants/statusCodes'
 import { tryCatchWrapper } from '../../utils/config.util';
-import { validateAddAllergy, validateAddEmergencyContact, validateAddMedication, validateDeleteUserInfo, validateUpdateAllergy, validateUpdateEmergencyContact, validateUpdateMedication, validateUpdateSetting, validateUserInfoDetails, validateUserInfoList } from '../../validations/User/user.validator';
-
+import { validateAddUpdateAllergy, validateAddUpdateContacts, validateAddUpdateMedications, validateDeleteUserInfo, validateUpdateSetting, validateUserInfoDetails, validateUserInfoList } from '../../validations/User/user.validator';
+//validateAddAllergy, validateAddEmergencyContact, validateAddMedication,
+//validateUpdateAllergy, validateUpdateEmergencyContact, validateUpdateMedication,
 @Tags('User Routes')
 @Route('/user')
 
@@ -22,56 +23,108 @@ export default class UserController extends Controller {
     }
 
     /**
-* Add User Allergy
+* Update User Allergy
 */
     @Security('Bearer')
-    @Post("/allergy/add")
-    public async addAllergy(@Body() request: { name: string }): Promise<ApiResponse> {
+    @Put("/allergy/add/update")
+    public async addOrUpdateAllergy(@Body() request: { allergies: Array<allergiesInterface>, }): Promise<ApiResponse> {
 
-        const validate = validateAddAllergy(request);
+        const validate = validateAddUpdateAllergy(request);
         if (validate.error) {
             return showResponse(false, validate.error.message, null, statusCodes.VALIDATION_ERROR)
         }
 
-        const wrappedFunc = tryCatchWrapper(handler.addAllergy);
+        const wrappedFunc = tryCatchWrapper(handler.addOrUpdateAllergy);
         return wrappedFunc(request, this.userId); // Invoking the wrapped function 
     }
     //ends
 
     /**
-    * Add User Medication
+    * Update User Medication
     */
     @Security('Bearer')
-    @Post("/medication/add")
-    public async addMedication(@Body() request: { name: string, dose: string, reason: string }): Promise<ApiResponse> {
+    @Put("/medication/add/update")
+    public async addOrUpdateMedication(@Body() request: { medications: Array<medicationsInterface> }): Promise<ApiResponse> {
 
-        const validate = validateAddMedication(request);
+        const validate = validateAddUpdateMedications(request);
         if (validate.error) {
             return showResponse(false, validate.error.message, null, statusCodes.VALIDATION_ERROR)
         }
 
-        const wrappedFunc = tryCatchWrapper(handler.addMedication);
+        const wrappedFunc = tryCatchWrapper(handler.addOrUpdateMedication);
         return wrappedFunc(request, this.userId); // Invoking the wrapped function 
     }
     //ends
 
 
     /**
-    * Add User Emergency Contact
+    * Update User Emergency Contact
     */
     @Security('Bearer')
-    @Post("/contact/add")
-    public async addEmergencyContact(@Body() request: { name: string, phone: string, email: string }): Promise<ApiResponse> {
+    @Put("/contact/add/update")
+    public async addOrUpdateEmergencyContact(@Body() request: { contacts: Array<emergencyContactInterface> }): Promise<ApiResponse> {
 
-        const validate = validateAddEmergencyContact(request);
+        const validate = validateAddUpdateContacts(request);
         if (validate.error) {
             return showResponse(false, validate.error.message, null, statusCodes.VALIDATION_ERROR)
         }
 
-        const wrappedFunc = tryCatchWrapper(handler.addEmergencyContact);
+        const wrappedFunc = tryCatchWrapper(handler.addOrUpdateEmergencyContact);
         return wrappedFunc(request, this.userId); // Invoking the wrapped function 
     }
     //ends
+
+    //     /**
+    // * Add User Allergy
+    // */
+    //     @Security('Bearer')
+    //     @Post("/allergy/add")
+    //     public async addAllergy(@Body() request: { name: string }): Promise<ApiResponse> {
+
+    //         const validate = validateAddAllergy(request);
+    //         if (validate.error) {
+    //             return showResponse(false, validate.error.message, null, statusCodes.VALIDATION_ERROR)
+    //         }
+
+    //         const wrappedFunc = tryCatchWrapper(handler.addAllergy);
+    //         return wrappedFunc(request, this.userId); // Invoking the wrapped function 
+    //     }
+    //     //ends
+
+    //     /**
+    //     * Add User Medication
+    //     */
+    //     @Security('Bearer')
+    //     @Post("/medication/add")
+    //     public async addMedication(@Body() request: { name: string, dose: string, reason: string }): Promise<ApiResponse> {
+
+    //         const validate = validateAddMedication(request);
+    //         if (validate.error) {
+    //             return showResponse(false, validate.error.message, null, statusCodes.VALIDATION_ERROR)
+    //         }
+
+    //         const wrappedFunc = tryCatchWrapper(handler.addMedication);
+    //         return wrappedFunc(request, this.userId); // Invoking the wrapped function 
+    //     }
+    //     //ends
+
+
+    //     /**
+    //     * Add User Emergency Contact
+    //     */
+    //     @Security('Bearer')
+    //     @Post("/contact/add")
+    //     public async addEmergencyContact(@Body() request: { name: string, phone: string, email: string }): Promise<ApiResponse> {
+
+    //         const validate = validateAddEmergencyContact(request);
+    //         if (validate.error) {
+    //             return showResponse(false, validate.error.message, null, statusCodes.VALIDATION_ERROR)
+    //         }
+
+    //         const wrappedFunc = tryCatchWrapper(handler.addEmergencyContact);
+    //         return wrappedFunc(request, this.userId); // Invoking the wrapped function 
+    //     }
+    //     //ends
 
 
     /**
@@ -126,57 +179,57 @@ export default class UserController extends Controller {
     }
     //ends
 
-    /**
-* Update User Allergy
-*/
-    @Security('Bearer')
-    @Put("/allergy/update")
-    public async updateAllergy(@Body() request: { allergy_id: string, name: string }): Promise<ApiResponse> {
+    //     /**
+    // * Update User Allergy
+    // */
+    //     @Security('Bearer')
+    //     @Put("/allergy/update")
+    //     public async updateAllergy(@Body() request: { allergy_id: string, name: string }): Promise<ApiResponse> {
 
-        const validate = validateUpdateAllergy(request);
-        if (validate.error) {
-            return showResponse(false, validate.error.message, null, statusCodes.VALIDATION_ERROR)
-        }
+    //         const validate = validateUpdateAllergy(request);
+    //         if (validate.error) {
+    //             return showResponse(false, validate.error.message, null, statusCodes.VALIDATION_ERROR)
+    //         }
 
-        const wrappedFunc = tryCatchWrapper(handler.updateAllergy);
-        return wrappedFunc(request, this.userId); // Invoking the wrapped function 
-    }
-    //ends
+    //         const wrappedFunc = tryCatchWrapper(handler.updateAllergy);
+    //         return wrappedFunc(request, this.userId); // Invoking the wrapped function 
+    //     }
+    //     //ends
 
-    /**
-    * Update User Medication
-    */
-    @Security('Bearer')
-    @Put("/medication/update")
-    public async updateMedication(@Body() request: { medication_id: string, name: string, dose: string, reason: string }): Promise<ApiResponse> {
+    //     /**
+    //     * Update User Medication
+    //     */
+    //     @Security('Bearer')
+    //     @Put("/medication/update")
+    //     public async updateMedication(@Body() request: { medication_id: string, name: string, dose: string, reason: string }): Promise<ApiResponse> {
 
-        const validate = validateUpdateMedication(request);
-        if (validate.error) {
-            return showResponse(false, validate.error.message, null, statusCodes.VALIDATION_ERROR)
-        }
+    //         const validate = validateUpdateMedication(request);
+    //         if (validate.error) {
+    //             return showResponse(false, validate.error.message, null, statusCodes.VALIDATION_ERROR)
+    //         }
 
-        const wrappedFunc = tryCatchWrapper(handler.updateMedication);
-        return wrappedFunc(request, this.userId); // Invoking the wrapped function 
-    }
-    //ends
+    //         const wrappedFunc = tryCatchWrapper(handler.updateMedication);
+    //         return wrappedFunc(request, this.userId); // Invoking the wrapped function 
+    //     }
+    //     //ends
 
 
-    /**
-    * Update User Emergency Contact
-    */
-    @Security('Bearer')
-    @Put("/contact/update")
-    public async updateEmergencyContact(@Body() request: { contact_id: string, name: string, phone: string, email: string }): Promise<ApiResponse> {
+    //     /**
+    //     * Update User Emergency Contact
+    //     */
+    //     @Security('Bearer')
+    //     @Put("/contact/update")
+    //     public async updateEmergencyContact(@Body() request: { contact_id: string, name: string, phone: string, email: string }): Promise<ApiResponse> {
 
-        const validate = validateUpdateEmergencyContact(request);
-        if (validate.error) {
-            return showResponse(false, validate.error.message, null, statusCodes.VALIDATION_ERROR)
-        }
+    //         const validate = validateUpdateEmergencyContact(request);
+    //         if (validate.error) {
+    //             return showResponse(false, validate.error.message, null, statusCodes.VALIDATION_ERROR)
+    //         }
 
-        const wrappedFunc = tryCatchWrapper(handler.updateEmergencyContact);
-        return wrappedFunc(request, this.userId); // Invoking the wrapped function 
-    }
-    //ends
+    //         const wrappedFunc = tryCatchWrapper(handler.updateEmergencyContact);
+    //         return wrappedFunc(request, this.userId); // Invoking the wrapped function 
+    //     }
+    //     //ends
 
 
     /**

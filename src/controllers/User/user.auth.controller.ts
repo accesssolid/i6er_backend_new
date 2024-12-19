@@ -42,7 +42,7 @@ export default class UserAuthController extends Controller {
     * Save a User
     */
     @Post("/register")
-    public async register(@Body() request: { display_name: string, first_name: string, last_name: string, email: string, password: string, dob: number, blood_group: string, allergies: Array<allergiesInterface>, medications: Array<medicationsInterface>, emergency_contacts: Array<emergencyContactInterface> }): Promise<ApiResponse> {
+    public async register(@Body() request: { display_name: string, email: string, password: string }): Promise<ApiResponse> {
 
         const validate = validateRegister(request);
         if (validate.error) {

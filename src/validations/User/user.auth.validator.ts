@@ -7,25 +7,23 @@ const loginSchema = joi.object({
 
 const registerSchema = joi.object({
     display_name: joi.string().trim().min(2).max(20).required(),
-    first_name: joi.string().trim().min(2).max(20).required(),
-    last_name: joi.string().required(),
-    email: joi.string().trim().email().min(4).max(35).required(),
+    email: joi.string().trim().email().required(),
     password: joi.string().min(4).max(20).required(),
-    dob: joi.number().required(),
-    blood_group: joi.string().required(),
-    allergies: joi.array().items({
-        name: joi.string().required(),
-    }),
-    medications: joi.array().items({
-        name: joi.string().required(),
-        dose: joi.string().required(),
-        reason: joi.string().required(),
-    }),
-    emergency_contacts: joi.array().items({
-        name: joi.string().required(),
-        phone: joi.string().required(),
-        email: joi.string().required(),
-    }),
+    // dob: joi.number().required(),
+    // blood_group: joi.string().required(),
+    // allergies: joi.array().items({
+    //     name: joi.string().required(),
+    // }),
+    // medications: joi.array().items({
+    //     name: joi.string().required(),
+    //     dose: joi.string().required(),
+    //     reason: joi.string().required(),
+    // }),
+    // emergency_contacts: joi.array().items({
+    //     name: joi.string().required(),
+    //     phone: joi.string().required(),
+    //     email: joi.string().required(),
+    // }),
 
 })
 
