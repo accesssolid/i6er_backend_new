@@ -60,6 +60,7 @@ const UserAuthHandler = {
         if (!result.status) {
             return showResponse(false, responseMessage.common.error_while_create_acc, null, statusCodes.API_ERROR)
         }
+        //jkdsd
         //after successfull registration of the user save allergies medications and emergency contacts as well
         // const allergiesPayload = allergies?.map((all: any) => { return { ...all, user_id: result?.data?._id } })
         // const medicationsPayload = medications?.map((medic: any) => { return { ...medic, user_id: result?.data?._id } })
