@@ -2,7 +2,7 @@ import { ApiResponse } from "../../utils/interfaces.util";
 import { showResponse } from "../../utils/response.util";
 import { findOne, findByIdAndUpdate, insertMany, findOneAndDelete, findAll, getCount, deleteMany } from "../../helpers/db.helpers";
 import * as commonHelper from "../../helpers/common.helper";
-import { APP, INFO_TYPE, ROLE, USER_STATUS } from '../../constants/app.constant';
+import { INFO_TYPE } from '../../constants/app.constant';
 import services from '../../services';
 import responseMessage from '../../constants/ResponseMessage'
 import statusCodes from '../../constants/statusCodes'
@@ -22,12 +22,12 @@ const UserHandler = {
     addOrUpdateAllergy: async (data: any, user_id: string): Promise<ApiResponse> => {
         const { allergies } = data
 
-        let inserted: any
+        let inserted: any = []
 
         if (allergies && allergies.length > 0) {
 
             const payload = allergies.map((allergy: any) => {
-                const { _id, ...rest } = allergy; // Exclude _id from the object
+                const { _id, user_id, createdAt, updatedAt, ...rest } = allergy; // Exclude _id from the object
                 return { ...rest, user_id }; // Add user_id to the remaining fields
             });
 
@@ -41,7 +41,9 @@ const UserHandler = {
                 }
             }//ends
 
-        }//ends
+        }//ends 
+
+
 
         return showResponse(true, responseMessage.common.update_sucess, inserted?.data, statusCodes.SUCCESS);
 
@@ -54,7 +56,7 @@ const UserHandler = {
         if (medications && medications.length > 0) {
 
             const payload = medications.map((medic: any) => {
-                const { _id, ...rest } = medic; // Exclude _id from the object
+                const { _id, user_id, createdAt, updatedAt, ...rest } = medic; // Exclude _id from the object
                 return { ...rest, user_id }; // Add user_id to the remaining fields
             });
 
@@ -81,7 +83,7 @@ const UserHandler = {
         if (contacts && contacts.length > 0) {
 
             const payload = contacts.map((conta: any) => {
-                const { _id, ...rest } = conta; // Exclude _id from the object
+                const { _id, user_id, createdAt, updatedAt, ...rest } = conta; // Exclude _id from the object
                 return { ...rest, user_id }; // Add user_id to the remaining fields
             });
 

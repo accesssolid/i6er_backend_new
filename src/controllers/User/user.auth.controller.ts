@@ -1,6 +1,6 @@
 import { Request, Response } from 'express'
 import { Route, Controller, Tags, Post, Body, Get, Security, UploadedFile, FormField, Put } from 'tsoa'
-import { allergiesInterface, ApiResponse, emergencyContactInterface, medicationsInterface } from '../../utils/interfaces.util';
+import { ApiResponse } from '../../utils/interfaces.util';
 import { validateChangePassword, validateForgotPassword, validateRefreshToken, validateUpdateProfile, validateRegister, validateResetPassword, validateUser, validateResendOtp, validateVerifyOtp } from '../../validations/User/user.auth.validator';
 import handler from '../../handlers/User/user.auth.handler'
 import { showResponse } from '../../utils/response.util';
@@ -204,21 +204,6 @@ export default class UserAuthController extends Controller {
     }
     //ends
 
-    //     /**
-    // * delete user account
-    // */
-    //     @Security('Bearer')
-    //     @Delete("/delete_account")
-    //     public async deleteAccount(@Body() request: { user_id: string }): Promise<ApiResponse> {
-
-    //         const validate = validateDeleteOrDeactivation(request);
-    //         if (validate.error) {
-    //             return showResponse(false, validate.error.message, null, statusCodes.VALIDATION_ERROR)
-    //         }
-
-    //         const wrappedFunc = tryCatchWrapper(handler.deleteAccount);
-    //         return wrappedFunc(request); // Invoking the wrapped function 
-    //     } //ends
 }
 
 

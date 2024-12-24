@@ -4,7 +4,6 @@ import { showOutput } from '../../utils/response.util'
 import { ApiResponse } from '../../utils/interfaces.util'
 import middlewares from '../../middlewares'
 const { verifyTokenUser } = middlewares.auth
-const { multer } = middlewares.fileUpload
 
 const router = express.Router()
 

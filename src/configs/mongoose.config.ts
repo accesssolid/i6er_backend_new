@@ -1,5 +1,5 @@
 import mongoose from "mongoose";
-import { DB } from "../constants/app.constant";
+// import { DB } from "../constants/app.constant";
 import dotenv from "dotenv";
 import path from "path";
 const envConfig = dotenv.config({ path: path.resolve(__dirname, "../../.env") });

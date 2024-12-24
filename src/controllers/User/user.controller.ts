@@ -1,5 +1,5 @@
 import { Request, Response } from 'express'
-import { Route, Controller, Tags, Post, Body, Get, Security, UploadedFile, FormField, Put, Query, Delete } from 'tsoa'
+import { Route, Controller, Tags, Body, Get, Security, Put, Query, Delete } from 'tsoa'
 import { allergiesInterface, ApiResponse, emergencyContactInterface, medicationsInterface } from '../../utils/interfaces.util';
 import handler from '../../handlers/User/user.handler'
 import { showResponse } from '../../utils/response.util';

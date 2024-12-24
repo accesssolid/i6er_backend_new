@@ -45,6 +45,9 @@ const deleteUserInfo = joi.object({
 const addOrUpdateAllergy = joi.object({
     allergies: joi.array().items({
         _id: joi.string().optional().allow(''),
+        user_id: joi.string().optional().allow(''),
+        createdAt: joi.string().optional().allow(''),
+        updatedAt: joi.string().optional().allow(''),
         name: joi.string().required(),
     })
 })
@@ -61,6 +64,9 @@ const updateSetting = joi.object({
 const addOrUpdateMedications = joi.object({
     medications: joi.array().items({
         _id: joi.string().optional().allow(''),
+        user_id: joi.string().optional().allow(''),
+        createdAt: joi.string().optional().allow(''),
+        updatedAt: joi.string().optional().allow(''),
         name: joi.string().required(),
         dose: joi.string().required(),
         reason: joi.string().required(),
@@ -70,6 +76,9 @@ const addOrUpdateMedications = joi.object({
 const addOrUpdateContacts = joi.object({
     contacts: joi.array().items({
         _id: joi.string().optional().allow(''),
+        user_id: joi.string().optional().allow(''),
+        createdAt: joi.string().optional().allow(''),
+        updatedAt: joi.string().optional().allow(''),
         name: joi.string().required(),
         phone: joi.string().required(),
         email: joi.string().required(),

@@ -1,9 +1,8 @@
 import ejs from 'ejs'
 import path from 'path'
-import moment from "moment";
 import { ApiResponse } from "../../utils/interfaces.util";
 import { showResponse } from "../../utils/response.util";
-import { findOne, findAll, createOne, findByIdAndUpdate, findOneAndUpdate, findAndUpdatePushOrSet, insertMany } from "../../helpers/db.helpers";
+import { findOne, findAll, createOne, findByIdAndUpdate, findOneAndUpdate } from "../../helpers/db.helpers";
 import { decodeToken, generateJwtToken } from "../../utils/auth.util";
 import * as commonHelper from "../../helpers/common.helper";
 import userModel from "../../models/User/user.auth.model";
@@ -61,7 +60,7 @@ const UserAuthHandler = {
     },
 
 
-    register: async (data: any, profile_pic: any): Promise<ApiResponse> => {
+    register: async (data: any): Promise<ApiResponse> => {
         const { email, password } = data;
         // check if user exists
         const exists = await findOne(userModel, { email, status: { $ne: USER_STATUS.DELETED } });
@@ -356,20 +355,6 @@ const UserAuthHandler = {
         return showResponse(true, responseMessage.users.logout_success, null, statusCodes.SUCCESS)
 
     },
-
-    // async deleteAccount(data: any): Promise<ApiResponse> {
-    //     const { user_id } = data
-    //     const status = USER_STATUS.DELETED
-    //     const result = await findByIdAndUpdate(userModel, { status }, user_id);
-
-    //     if (result.status) {
-    //         delete result.data.password
-    //         const msg = status == USER_STATUS.DELETED ? 'deleted' : 'deactivated'
-    //         return showResponse(true, `User account has been ${msg} `, null, statusCodes.SUCCESS);
-    //     }
-    //     return showResponse(false, 'Error While Perform Operation', null, statusCodes.API_ERROR);
-
-    // }
 
 }
 
