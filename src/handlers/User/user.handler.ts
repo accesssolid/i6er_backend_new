@@ -27,7 +27,7 @@ const UserHandler = {
         if (allergies && allergies.length > 0) {
 
             const payload = allergies.map((allergy: any) => {
-                const { _id, user_id, createdAt, updatedAt, ...rest } = allergy; // Exclude _id from the object
+                const { _id, createdAt, updatedAt, ...rest } = allergy; // Exclude _id from the object
                 return { ...rest, user_id }; // Add user_id to the remaining fields
             });
 
@@ -56,10 +56,10 @@ const UserHandler = {
         if (medications && medications.length > 0) {
 
             const payload = medications.map((medic: any) => {
-                const { _id, user_id, createdAt, updatedAt, ...rest } = medic; // Exclude _id from the object
+                const { _id, createdAt, updatedAt, ...rest } = medic; // Exclude _id from the object
                 return { ...rest, user_id }; // Add user_id to the remaining fields
             });
-
+              console.log(payload,"payloadddd")
             //delete previous trades and replace by new trades
             const deletedAll = await deleteMany(userMedicationModel, { user_id })
             if (deletedAll.status) {
@@ -83,7 +83,7 @@ const UserHandler = {
         if (contacts && contacts.length > 0) {
 
             const payload = contacts.map((conta: any) => {
-                const { _id, user_id, createdAt, updatedAt, ...rest } = conta; // Exclude _id from the object
+                const { _id, createdAt, updatedAt, ...rest } = conta; // Exclude _id from the object
                 return { ...rest, user_id }; // Add user_id to the remaining fields
             });
 

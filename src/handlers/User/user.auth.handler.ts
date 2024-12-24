@@ -49,9 +49,9 @@ const UserAuthHandler = {
         const response = {
             ...exists.data,
             age,
-            medications: medications?.data,
-            allergies: allergies?.data,
-            contacts: contacts?.data,
+            medications: medications?.data ?? [],
+            allergies: allergies?.data ?? [],
+            contacts: contacts?.data ?? [],
             token, refresh_token
         }
 
@@ -267,9 +267,9 @@ const UserAuthHandler = {
         const response = {
             ...findUser.data,
             age,
-            medications: medications?.data,
-            allergies: allergies?.data,
-            contacts: contacts?.data,
+            medications: medications?.data ?? [],
+            allergies: allergies?.data ?? [],
+            contacts: contacts?.data ?? [],
         }
 
         return showResponse(true, responseMessage.users.user_detail, response, statusCodes.SUCCESS)
