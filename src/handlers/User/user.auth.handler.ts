@@ -40,7 +40,23 @@ const UserAuthHandler = {
         delete exists.data.password
         const refresh_token = await generateJwtToken(exists.data._id, { user_type: 'user', type: "access", role: exists?.data?.user_type }, APP.REFRESH_EXPIRY)
 
-        return showResponse(true, responseMessage.users.login_success, { ...exists.data, token, refresh_token }, statusCodes.SUCCESS)
+        const user_id = exists?.data?._id
+        const age = commonHelper.calculateAgeFromUnix(exists.data?.dob);
+
+        const medications = await findAll(userMedicationModel, { user_id }, '_id name dose reason', 2)
+        const allergies = await findAll(userAllergiesModel, { user_id }, '_id name', 2)
+        const contacts = await findAll(userEmergencyContact, { user_id }, '_id name phone email', 2)
+
+        const response = {
+            ...exists.data,
+            age,
+            medications: medications?.data,
+            allergies: allergies?.data,
+            contacts: contacts?.data,
+            token, refresh_token
+        }
+
+        return showResponse(true, responseMessage.users.login_success, response, statusCodes.SUCCESS)
 
     },
 
