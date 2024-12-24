@@ -3,7 +3,8 @@ import { DB } from "../constants/app.constant";
 
 export const connection = async () => {
 
-  const MONGO_URI = await DB.MONGODB_URI
+  const MONGO_URI = 'mongodb://i6eR_Dev:i6eR_1077@localhost/i6eR_Dev'
+  // const MONGO_URI = await DB.MONGODB_URI
   console.log(MONGO_URI, "MONGO_URI_CONNECTION_SIDE")
   mongoose.Promise = global.Promise;
 
