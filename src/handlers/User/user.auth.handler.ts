@@ -78,31 +78,31 @@ const UserAuthHandler = {
         if (!result.status) {
             return showResponse(false, responseMessage.common.error_while_create_acc, null, statusCodes.API_ERROR)
         }
-        //jkdsd
-        //after successfull registration of the user save allergies medications and emergency contacts as well
-        // const allergiesPayload = allergies?.map((all: any) => { return { ...all, user_id: result?.data?._id } })
-        // const medicationsPayload = medications?.map((medic: any) => { return { ...medic, user_id: result?.data?._id } })
-        // const emergencyContactsPayload = emergency_contacts?.map((contac: any) => { return { ...contac, user_id: result?.data?._id } })
 
-        // const saveAllergies = await insertMany(userAllergiesModel, allergiesPayload)
-        // if (!saveAllergies.status) {
-        //     return showResponse(false, responseMessage.users.register_error, {}, statusCodes.API_ERROR)
-        // }
-        // const saveMedications = await insertMany(userMedicationModel, medicationsPayload)
-        // if (!saveMedications.status) {
-        //     return showResponse(false, responseMessage.users.register_error, {}, statusCodes.API_ERROR)
-        // }
-        // const saveEmergencyContacts = await insertMany(userEmergencyContact, emergencyContactsPayload)
-        // if (!saveEmergencyContacts.status) {
-        //     return showResponse(false, responseMessage.users.register_error, {}, statusCodes.API_ERROR)
-        // }
 
         delete result?.data.password
+        delete result?.data.otp
 
         const token = await generateJwtToken(result.data?._id, { user_type: 'user', type: "access", role: result?.data?.user_type }, APP.ACCESS_EXPIRY)
         const refresh_token = await generateJwtToken(result.data?._id, { user_type: 'user', type: "access", role: result?.data?.user_type }, APP.REFRESH_EXPIRY)
 
-        return showResponse(true, responseMessage.users.register_success, { token, refresh_token }, statusCodes.SUCCESS)
+        const user_id = result?.data?._id
+        const age = commonHelper.calculateAgeFromUnix(result.data?.dob);
+
+        const medications = await findAll(userMedicationModel, { user_id }, '_id name dose reason', 2)
+        const allergies = await findAll(userAllergiesModel, { user_id }, '_id name', 2)
+        const contacts = await findAll(userEmergencyContact, { user_id }, '_id name phone email', 2)
+
+        const response = {
+            ...result.data,
+            age,
+            medications: medications?.data ?? [],
+            allergies: allergies?.data ?? [],
+            contacts: contacts?.data ?? [],
+            token, refresh_token
+        }
+
+        return showResponse(true, responseMessage.users.register_success, response, statusCodes.SUCCESS)
 
     },//ends
 

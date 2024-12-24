@@ -396,6 +396,11 @@ const formatDateTOMonthDayYear = (unixTimestamp: number): string => {
 }
 
 function calculateAgeFromUnix(unixTimestamp: number) {
+    // Check if the Unix timestamp is null, undefined, or not a valid number
+    if (unixTimestamp == null || isNaN(unixTimestamp) || unixTimestamp <= 0) {
+        return null;
+    }
+
     // Convert the Unix timestamp to a Date object
     const birthDate = new Date(unixTimestamp * 1000); // Unix timestamp is in seconds, so multiply by 1000 to convert to milliseconds
 
