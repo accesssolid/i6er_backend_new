@@ -346,9 +346,9 @@ const UserAuthHandler = {
         }
 
         const accessToken = await generateJwtToken(findUser.data._id, { user_type: 'user', type: "access", role: findUser?.data?.user_type }, APP.ACCESS_EXPIRY)
-        // const refreshToken = await generateJwtToken(findUser.data._id, { user_type: 'user', type: "access", role: findUser?.data?.user_type }, APP.REFRESH_EXPIRY)
+        const refreshToken = await generateJwtToken(findUser.data._id, { user_type: 'user', type: "access", role: findUser?.data?.user_type }, APP.REFRESH_EXPIRY)
 
-        return showResponse(true, 'token generated successfully', { token: accessToken }, statusCodes.SUCCESS)
+        return showResponse(true, 'token generated successfully', { token: accessToken, refresh_token: refreshToken }, statusCodes.SUCCESS)
 
     },
 

@@ -1,12 +1,7 @@
-import ejs from 'ejs'
-import path from 'path'
-import moment from "moment";
 import { ApiResponse } from "../../utils/interfaces.util";
 import { showResponse } from "../../utils/response.util";
-import { findOne, createOne, findByIdAndUpdate, findOneAndUpdate, findAndUpdatePushOrSet, insertMany, findOneAndDelete, findAll, getCount, deleteMany } from "../../helpers/db.helpers";
-import { decodeToken, generateJwtToken } from "../../utils/auth.util";
+import { findOne, findByIdAndUpdate, insertMany, findOneAndDelete, findAll, getCount, deleteMany } from "../../helpers/db.helpers";
 import * as commonHelper from "../../helpers/common.helper";
-import userModel from "../../models/User/user.auth.model";
 import { APP, INFO_TYPE, ROLE, USER_STATUS } from '../../constants/app.constant';
 import services from '../../services';
 import responseMessage from '../../constants/ResponseMessage'

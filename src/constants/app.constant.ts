@@ -32,7 +32,7 @@ const APP: AppConstant = {
   ADMIN_CRED_EMAIL: ADMIN_EMAIL,
   FILE_SIZE: 100, //SPECIFY IN MB
   PROJECT_NAME: 'ie6r',
-  PROJECT_LOGO: ''
+  PROJECT_LOGO: 'file/file-1735028209184.webp'
 };
 
 const DB: DbConstant = {
@@ -95,7 +95,7 @@ const initializeAwsCredential = async () => {
   AWS_CREDENTIAL = {
     ACCESSID: services.awsService.getParameterFromAWS({ name: ACCESSID }),
     REGION: services.awsService.getParameterFromAWS({ name: REGION }),
-    AWS_SECRET: services.awsService.getSecretFromAWS("digismart"),
+    AWS_SECRET: services.awsService.getSecretFromAWS("digismart_secret"),
     BUCKET_NAME: services.awsService.getParameterFromAWS({ name: BUCKET }),
     COLLECTION_ID_AWS_REKOGNITION: process.env.COLLECTION_ID_AWS_REKOGNITION, //use it if want to use image search in project
   };

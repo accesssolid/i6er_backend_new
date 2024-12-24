@@ -92,12 +92,6 @@ router.post('/logout', async (req: Request | any, res: Response) => {
     return showOutput(res, result, result.code)
 })
 
-// router.delete('/delete_account', verifyTokenUser, async (req: Request | any, res: Response) => {
-//     const { user_id } = req.body
-//     const controller = new UserAuthController(req, res)
-//     const result: ApiResponse = await controller.deleteAccount({ user_id });
-//     return showOutput(res, result, result.code)
 
-// })
 
 export default router
