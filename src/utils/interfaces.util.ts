@@ -88,3 +88,10 @@ export interface emergencyContactInterface {
     email: string;
 }[]
 
+
+//tradesman interfaces
+export interface userLocationInterface {
+    name: string;
+    type: "Point";
+    coordinates: number[];  // Changed to a generic array of numbers
+}

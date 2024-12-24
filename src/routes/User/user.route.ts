@@ -108,6 +108,13 @@ router.put('/setting/update', verifyTokenUser, async (req: Request | any, res: R
     return showOutput(res, result, result.code)
 })
 
+router.post('/emergency/trigger', verifyTokenUser, async (req: Request | any, res: Response) => {
+    const { location } = req.body
+    const controller = new UserController(req, res)
+    const result: ApiResponse = await controller.emergencyNotificationTrigger({ location });
+    return showOutput(res, result, result.code)
+})
+
 
 
 

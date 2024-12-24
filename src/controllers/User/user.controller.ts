@@ -1,6 +1,6 @@
 import { Request, Response } from 'express'
-import { Route, Controller, Tags, Body, Get, Security, Put, Query, Delete } from 'tsoa'
-import { allergiesInterface, ApiResponse, emergencyContactInterface, medicationsInterface } from '../../utils/interfaces.util';
+import { Route, Controller, Tags, Body, Get, Security, Put, Query, Delete, Post } from 'tsoa'
+import { allergiesInterface, ApiResponse, emergencyContactInterface, medicationsInterface, userLocationInterface } from '../../utils/interfaces.util';
 import handler from '../../handlers/User/user.handler'
 import { showResponse } from '../../utils/response.util';
 import statusCodes from '../../constants/statusCodes'
@@ -263,6 +263,17 @@ export default class UserController extends Controller {
         }
 
         const wrappedFunc = tryCatchWrapper(handler.updateSettings);
+        return wrappedFunc(request, this.userId); // Invoking the wrapped function 
+    }
+    //ends
+
+    /**
+* Trigger Emergency Notification
+*/
+    @Security('Bearer')
+    @Post("/emergency/trigger")
+    public async emergencyNotificationTrigger(@Body() request: { location: userLocationInterface }): Promise<ApiResponse> {
+        const wrappedFunc = tryCatchWrapper(handler.emergencyNotificationTrigger);
         return wrappedFunc(request, this.userId); // Invoking the wrapped function 
     }
     //ends

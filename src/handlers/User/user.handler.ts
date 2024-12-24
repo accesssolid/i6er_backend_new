@@ -2,7 +2,7 @@ import { ApiResponse } from "../../utils/interfaces.util";
 import { showResponse } from "../../utils/response.util";
 import { findOne, findByIdAndUpdate, insertMany, findOneAndDelete, findAll, getCount, deleteMany } from "../../helpers/db.helpers";
 import * as commonHelper from "../../helpers/common.helper";
-import { INFO_TYPE } from '../../constants/app.constant';
+import { APP, INFO_TYPE } from '../../constants/app.constant';
 import services from '../../services';
 import responseMessage from '../../constants/ResponseMessage'
 import statusCodes from '../../constants/statusCodes'
@@ -10,6 +10,8 @@ import userAllergiesModel from '../../models/User/user.allergies.model';
 import userMedicationModel from '../../models/User/user.medication.model';
 import userEmergencyContact from '../../models/User/user.emergencyContact';
 import userAuthModel from '../../models/User/user.auth.model';
+import path from 'path'
+import ejs from 'ejs'
 
 const infoModel = {
     [INFO_TYPE.ALLERGY]: userAllergiesModel,
@@ -389,6 +391,109 @@ const UserHandler = {
         return showResponse(true, responseMessage.common.update_sucess, response, statusCodes.SUCCESS);
 
     },
+
+    emergencyNotificationTrigger: async (data: any, user_id: string): Promise<ApiResponse> => {
+        const { location } = data
+
+        const findUser = await findOne(userAuthModel, { _id: user_id })
+        if (!findUser.status) {
+            return showResponse(false, responseMessage.users.invalid_user, null, statusCodes.API_ERROR);
+        }
+
+        const userData = findUser?.data
+
+        const emergencyContacts = await findAll(userEmergencyContact, { user_id })
+        const user_name = userData?.display_name
+
+        if (emergencyContacts.status && emergencyContacts?.data?.length > 0) {
+
+            const emailSend = emergencyContacts?.data?.map(async (contact: any) => {
+                const emergency_contact_name = contact?.name
+                const locationCoordinates = location?.coordinates ? `longitude:${location.coordinates[0]}, latitude:${location.coordinates[1]}` : '';
+
+                const email_payload = { project_name: APP.PROJECT_NAME, user_name, cidLogo: 'unique@Logo', emergency_contact_name, location: locationCoordinates }
+                const template = await ejs.renderFile(path.join(process.cwd(), './src/templates', 'emergency.ejs'), email_payload);
+                const logoPath = path.join(process.cwd(), './public', 'logo.png');
+
+                const to = `${contact?.email}`
+                const subject = `Urgent: Emergency Call Alert for ${user_name}`
+
+                const attachments = [
+                    {
+                        filename: 'logo.png',
+                        path: logoPath,
+                        cid: 'unique@Logo',
+                    }
+                ]
+
+                const forgotPassMail = await services.emailService.nodemail(to, subject, template, attachments)
+            })
+
+        }//ends
+
+
+        return showResponse(true, 'Emergency Email Sent Successfully', null, statusCodes.SUCCESS);
+
+    },
+
+    // emergencyNotificationTrigger: async (data: any, user_id: string): Promise<ApiResponse> => {
+    //     const { location } = data
+
+    //     const findUser = await findOne(userAuthModel, { _id: user_id })
+    //     if (!findUser.status) {
+    //         return showResponse(false, responseMessage.users.invalid_user, null, statusCodes.API_ERROR);
+    //     }
+
+    //     const userData = findUser?.data
+
+    //     const emergencyContacts = await findAll(userEmergencyContact, { user_id })
+    //     const userAllergies = await findAll(userAllergiesModel, { user_id })
+    //     const userMedications = await findAll(userMedicationModel, { user_id })
+    //     const allergies = userAllergies?.data?.map((aller: any) => {
+    //         // Destructuring to remove unwanted fields
+    //         const { createdAt, updatedAt, user_id, _id, ...cleanedAllergy } = aller;
+    //         return cleanedAllergy; // Returning the object without the excluded fields
+    //     });
+
+    //     const medications = userMedications?.data?.map((med: any) => {
+    //         // Destructuring to remove unwanted fields
+    //         const { createdAt, updatedAt, user_id, _id, ...cleanedMedication } = med;
+    //         return cleanedMedication; // Returning the object without the excluded fields
+    //     });
+    //     const blood_group = userData?.blood_group
+    //     const user_name = userData?.display_name
+    //     const age = commonHelper.calculateAgeFromUnix(userData?.dob) ?? 0
+
+    //     if (emergencyContacts.status && emergencyContacts?.data?.length > 0) {
+
+    //         const emailSend = emergencyContacts?.data?.map(async (contact: any) => {
+
+
+    //             const email_payload = { project_name: APP.PROJECT_NAME, user_name, cidLogo: 'unique@Logo', allergies, medications, blood_group, age }
+    //             const template = await ejs.renderFile(path.join(process.cwd(), './src/templates', 'emergency.ejs'), email_payload);
+    //             const logoPath = path.join(process.cwd(), './public', 'logo.png');
+
+    //             const to = `${contact?.email}`
+    //             const subject = `Emergency Email`
+
+    //             const attachments = [
+    //                 {
+    //                     filename: 'logo.png',
+    //                     path: logoPath,
+    //                     cid: 'unique@Logo',
+    //                 }
+    //             ]
+
+    //             const forgotPassMail = await services.emailService.nodemail(to, subject, template, attachments)
+    //             console.log(forgotPassMail, "forgotmaill")
+    //         })
+
+    //     }//ends
+
+
+    //     return showResponse(true, 'Emergency Email Sent Successfully', null, statusCodes.SUCCESS);
+
+    // },
 
 
 }

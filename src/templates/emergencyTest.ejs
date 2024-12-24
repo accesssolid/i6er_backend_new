@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html>
+  <head></head>
+  <body
+    style="
+      font-family: Arial, sans-serif;
+      background-color: #f4f4f4;
+      margin: 0;
+      padding: 0;
+    "
+  >
+    <div
+      style="
+        width: 600px;
+        text-align: center;
+        margin: 0 auto;
+        padding: 20px;
+        background-color: #ffffff;
+        border-radius: 10px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+      "
+    >
+      <div style="text-align: center; padding: 10px">
+        <img src="cid:<%= cidLogo %>" alt="logo" style="max-height: 75px; max-width: 75px;" />
+      </div>
+
+      <span
+        style="
+          font-weight: 700;
+          font-size: 22px;
+          text-align: center;
+          margin-top: 20px;
+        "
+      >
+        Emergency Alert: <%= user_name %> has called 911
+      </span>
+
+      <p
+        style="
+          font-weight: bold;
+          font-family: Arial;
+          font-size: 16px;
+          text-align: center;
+          margin-top: 20px;
+        "
+      >
+        We have received an emergency call from <%= user_name %> and wanted to inform you immediately. 
+        Please be prepared for possible medical assistance and further instructions from authorities.
+      </p>
+
+      <p
+        style="
+          font-family: Arial;
+          font-size: 14px;
+          text-align: center;
+          margin-top: 20px;
+        "
+      >
+        Below are the critical medical details you need to know to assist in the emergency:
+        <br /><br />
+        
+        <strong>Allergies:</strong> <%= allergies.join(', ') %> <br />
+        
+        <strong>Medications:</strong>
+        <ul style="text-align: left; margin: 0 auto; display: inline-block;">
+          <% medications.forEach(function(medication) { %>
+            <li><strong>Name:</strong> <%= medication.name %>, <strong>Dose:</strong> <%= medication.dose %>, <strong>Reason:</strong> <%= medication.reason %></li>
+          <% }); %>
+        </ul>
+      </p>
+
+      <p
+        style="
+          font-family: Arial;
+          font-size: 14px;
+          text-align: center;
+          margin-top: 20px;
+        "
+      >
+        Please stay alert and follow any instructions from emergency services. Your prompt response can make a significant difference.
+      </p>
+
+      <p>
+        Regards,
+        <br />
+        <%= project_name %> ie6R Emergency Response Team
+      </p>
+    </div>
+  </body>
+</html>

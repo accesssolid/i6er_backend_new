@@ -80,6 +80,34 @@
 				],
 				"type": "object",
 				"additionalProperties": false
+			},
+			"userLocationInterface": {
+				"properties": {
+					"name": {
+						"type": "string"
+					},
+					"type": {
+						"type": "string",
+						"enum": [
+							"Point"
+						],
+						"nullable": false
+					},
+					"coordinates": {
+						"items": {
+							"type": "number",
+							"format": "double"
+						},
+						"type": "array"
+					}
+				},
+				"required": [
+					"name",
+					"type",
+					"coordinates"
+				],
+				"type": "object",
+				"additionalProperties": false
 			}
 		},
 		"securitySchemes": {
@@ -498,6 +526,51 @@
 									"allow_gps",
 									"send_sms",
 									"display_dob"
+								],
+								"type": "object"
+							}
+						}
+					}
+				}
+			}
+		},
+		"/user/emergency/trigger": {
+			"post": {
+				"operationId": "EmergencyNotificationTrigger",
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ApiResponse"
+								}
+							}
+						}
+					}
+				},
+				"description": "Trigger Emergency Notification",
+				"tags": [
+					"User Routes"
+				],
+				"security": [
+					{
+						"Bearer": []
+					}
+				],
+				"parameters": [],
+				"requestBody": {
+					"required": true,
+					"content": {
+						"application/json": {
+							"schema": {
+								"properties": {
+									"location": {
+										"$ref": "#/components/schemas/userLocationInterface"
+									}
+								},
+								"required": [
+									"location"
 								],
 								"type": "object"
 							}
