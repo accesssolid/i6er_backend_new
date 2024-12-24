@@ -3,7 +3,7 @@ import path from 'path'
 import moment from "moment";
 import { ApiResponse } from "../../utils/interfaces.util";
 import { showResponse } from "../../utils/response.util";
-import { findOne, createOne, findByIdAndUpdate, findOneAndUpdate, findAndUpdatePushOrSet, insertMany } from "../../helpers/db.helpers";
+import { findOne, findAll, createOne, findByIdAndUpdate, findOneAndUpdate, findAndUpdatePushOrSet, insertMany } from "../../helpers/db.helpers";
 import { decodeToken, generateJwtToken } from "../../utils/auth.util";
 import * as commonHelper from "../../helpers/common.helper";
 import userModel from "../../models/User/user.auth.model";
@@ -19,8 +19,10 @@ const UserAuthHandler = {
 
     login: async (data: any): Promise<ApiResponse> => {
         const { email, password } = data;
-        const exists = await findOne(userModel, { email, status: { $ne: USER_STATUS.DELETED } }, { otp: 0 });
+        console.log(email, "email")
 
+        const exists = await findOne(userModel, { email, status: { $ne: USER_STATUS.DELETED } }, { otp: 0 });
+        console.log(exists, "existss")
         if (!exists.status) {
             return showResponse(false, responseMessage.users.not_registered, null, statusCodes.API_ERROR)
         }
@@ -234,12 +236,28 @@ const UserAuthHandler = {
 
     },
 
-    getUserDetails: async (userId: string): Promise<ApiResponse> => {
-        const getResponse = await findOne(userModel, { _id: userId }, { password: 0, otp: 0, is_verified: 0 });
-        if (!getResponse.status) {
+    getUserDetails: async (user_id: string): Promise<ApiResponse> => {
+
+        const findUser = await findOne(userModel, { _id: user_id }, { password: 0, otp: 0, is_verified: 0 });
+        if (!findUser.status) {
             return showResponse(false, responseMessage.users.invalid_user, null, statusCodes.API_ERROR)
         }
-        return showResponse(true, responseMessage.users.user_detail, getResponse.data, statusCodes.SUCCESS)
+
+        const age = commonHelper.calculateAgeFromUnix(findUser.data.dob);
+
+        const medications = await findAll(userMedicationModel, { user_id }, '_id name dose reason', 2)
+        const allergies = await findAll(userAllergiesModel, { user_id }, '_id name', 2)
+        const contacts = await findAll(userEmergencyContact, { user_id }, '_id name phone email', 2)
+
+        const response = {
+            ...findUser.data,
+            age,
+            medications: medications?.data,
+            allergies: allergies?.data,
+            contacts: contacts?.data,
+        }
+
+        return showResponse(true, responseMessage.users.user_detail, response, statusCodes.SUCCESS)
 
     },
 
