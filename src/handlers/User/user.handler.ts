@@ -40,7 +40,7 @@ const UserHandler = {
             //delete previous trades and replace by new trades
             const deletedAll = await deleteMany(userAllergiesModel, { user_id })
             if (deletedAll.status) {
-                const inserted = await insertMany(userAllergiesModel, payload)
+                inserted = await insertMany(userAllergiesModel, payload)
                 if (!inserted.status) {
                     return showResponse(false, responseMessage.users.user_account_update_error, null, statusCodes.API_ERROR);
                 }
@@ -66,7 +66,7 @@ const UserHandler = {
             //delete previous trades and replace by new trades
             const deletedAll = await deleteMany(userMedicationModel, { user_id })
             if (deletedAll.status) {
-                const inserted = await insertMany(userMedicationModel, payload)
+                inserted = await insertMany(userMedicationModel, payload)
                 if (!inserted.status) {
                     return showResponse(false, responseMessage.users.user_account_update_error, null, statusCodes.API_ERROR);
                 }
@@ -93,7 +93,7 @@ const UserHandler = {
             //delete previous trades and replace by new trades
             const deletedAll = await deleteMany(userEmergencyContact, { user_id })
             if (deletedAll.status) {
-                const inserted = await insertMany(userEmergencyContact, payload)
+                inserted = await insertMany(userEmergencyContact, payload)
                 if (!inserted.status) {
                     return showResponse(false, responseMessage.users.user_account_update_error, null, statusCodes.API_ERROR);
                 }

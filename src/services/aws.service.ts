@@ -341,6 +341,10 @@ const uploadToS3 = async (files: any[], key?: string) => {
         });
 
         const bucketName = await AWS_CREDENTIAL.BUCKET_NAME;
+       console.log(bucketName,"bucketname")
+       console.log(await AWS_CREDENTIAL.REGION,"regiosss")
+       console.log(await AWS_CREDENTIAL.ACCESSID,"accessidd")
+       console.log(await AWS_CREDENTIAL.AWS_SECRET,"secrettttt")
 
         const s3UploadPromises = files.map((file: any) => {
             return new Promise((resolve) => {

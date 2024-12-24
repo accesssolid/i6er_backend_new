@@ -43,9 +43,9 @@ const UserAuthHandler = {
         const user_id = exists?.data?._id
         const age = commonHelper.calculateAgeFromUnix(exists.data?.dob);
 
-        const medications = await findAll(userMedicationModel, { user_id }, '_id name dose reason', 2)
-        const allergies = await findAll(userAllergiesModel, { user_id }, '_id name', 2)
-        const contacts = await findAll(userEmergencyContact, { user_id }, '_id name phone email', 2)
+        const medications = await findAll(userMedicationModel, { user_id }, '_id name dose reason')
+        const allergies = await findAll(userAllergiesModel, { user_id }, '_id name')
+        const contacts = await findAll(userEmergencyContact, { user_id }, '_id name phone email')
 
         const response = {
             ...exists.data,
@@ -89,9 +89,9 @@ const UserAuthHandler = {
         const user_id = result?.data?._id
         const age = commonHelper.calculateAgeFromUnix(result.data?.dob);
 
-        const medications = await findAll(userMedicationModel, { user_id }, '_id name dose reason', 2)
-        const allergies = await findAll(userAllergiesModel, { user_id }, '_id name', 2)
-        const contacts = await findAll(userEmergencyContact, { user_id }, '_id name phone email', 2)
+        const medications = await findAll(userMedicationModel, { user_id }, '_id name dose reason')
+        const allergies = await findAll(userAllergiesModel, { user_id }, '_id name')
+        const contacts = await findAll(userEmergencyContact, { user_id }, '_id name phone email')
 
         const response = {
             ...result.data,
@@ -261,9 +261,9 @@ const UserAuthHandler = {
 
         const age = commonHelper.calculateAgeFromUnix(findUser.data.dob);
 
-        const medications = await findAll(userMedicationModel, { user_id }, '_id name dose reason', 2)
-        const allergies = await findAll(userAllergiesModel, { user_id }, '_id name', 2)
-        const contacts = await findAll(userEmergencyContact, { user_id }, '_id name phone email', 2)
+        const medications = await findAll(userMedicationModel, { user_id }, '_id name dose reason')
+        const allergies = await findAll(userAllergiesModel, { user_id }, '_id name')
+        const contacts = await findAll(userEmergencyContact, { user_id }, '_id name phone email')
 
         const response = {
             ...findUser.data,
