@@ -318,7 +318,22 @@ const UserAuthHandler = {
 
         delete result.data.password
         delete result.data.otp
-        return showResponse(true, responseMessage.users.user_account_updated, result.data, statusCodes.SUCCESS);
+
+        const age = commonHelper.calculateAgeFromUnix(result.data.dob);
+
+        const medications = await findAll(userMedicationModel, { user_id }, '_id name dose reason')
+        const allergies = await findAll(userAllergiesModel, { user_id }, '_id name')
+        const contacts = await findAll(userEmergencyContact, { user_id }, '_id name phone email')
+
+        const response = {
+            ...result.data,
+            age,
+            medications: medications?.data ?? [],
+            allergies: allergies?.data ?? [],
+            contacts: contacts?.data ?? [],
+        }
+
+        return showResponse(true, responseMessage.users.user_account_updated, response, statusCodes.SUCCESS);
 
     },
 
