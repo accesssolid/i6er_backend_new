@@ -59,7 +59,7 @@ const UserHandler = {
                 const { _id, createdAt, updatedAt, ...rest } = medic; // Exclude _id from the object
                 return { ...rest, user_id }; // Add user_id to the remaining fields
             });
-              console.log(payload,"payloadddd")
+            console.log(payload, "payloadddd")
             //delete previous trades and replace by new trades
             const deletedAll = await deleteMany(userMedicationModel, { user_id })
             if (deletedAll.status) {
@@ -368,7 +368,25 @@ const UserHandler = {
             return showResponse(false, responseMessage.common.update_failed, null, statusCodes.API_ERROR);
         }
 
-        return showResponse(true, responseMessage.common.update_sucess, result.data, statusCodes.SUCCESS);
+
+        delete result.data.password
+        delete result.data.otp
+
+        const age = commonHelper.calculateAgeFromUnix(result.data.dob);
+
+        const medications = await findAll(userMedicationModel, { user_id }, '_id name dose reason')
+        const allergies = await findAll(userAllergiesModel, { user_id }, '_id name')
+        const contacts = await findAll(userEmergencyContact, { user_id }, '_id name phone email')
+
+        const response = {
+            ...result.data,
+            age,
+            medications: medications?.data ?? [],
+            allergies: allergies?.data ?? [],
+            contacts: contacts?.data ?? [],
+        }
+
+        return showResponse(true, responseMessage.common.update_sucess, response, statusCodes.SUCCESS);
 
     },
 
