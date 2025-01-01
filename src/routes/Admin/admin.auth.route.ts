@@ -8,9 +8,9 @@ const { multer } = middlewares.fileUpload
 const router = express.Router()
 
 router.post('/login', async (req: Request | any, res: Response) => {
-    const { email, password, os_type } = req.body;
+    const { email, password } = req.body;
     const controller = new AdminAuthController(req, res)
-    const result: ApiResponse = await controller.login({ email, password, os_type });
+    const result: ApiResponse = await controller.login({ email, password });
     return showOutput(res, result, result.code)
 })
 
@@ -23,12 +23,11 @@ router.post('/forgot_password', async (req: Request | any, res: Response) => {
 })
 
 router.post('/reset_password', async (req: Request | any, res: Response) => {
-    const { email, new_password } = req.body;
+    const { email, new_password, otp } = req.body;
     const controller = new AdminAuthController(req, res)
-    const result: ApiResponse = await controller.resetPassword({ email, new_password });
+    const result: ApiResponse = await controller.resetPassword({ email, new_password, otp });
     return showOutput(res, result, result.code)
 })
-
 
 
 router.post('/verify_otp', async (req: Request | any, res: Response) => {
@@ -44,7 +43,6 @@ router.post('/resend_otp', async (req: Request | any, res: Response) => {
     const controller = new AdminAuthController(req, res)
     const result: ApiResponse = await controller.resendOtp({ email });
     return showOutput(res, result, result.code)
-
 })
 
 
@@ -53,7 +51,6 @@ router.post('/change_password', verifyTokenAdmin, async (req: Request | any, res
     const controller = new AdminAuthController(req, res)
     const result: ApiResponse = await controller.changePassword({ old_password, new_password });
     return showOutput(res, result, result.code)
-
 })
 
 router.get('/details', verifyTokenAdmin, async (req: Request | any, res: Response) => {

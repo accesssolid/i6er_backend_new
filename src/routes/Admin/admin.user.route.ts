@@ -31,13 +31,20 @@ router.put('/status', verifyTokenAdmin, async (req: Request | any, res: Response
 
 })
 
-router.get('/dashboard', verifyTokenAdmin, async (req: Request | any, res: Response) => {
-    const { past_day } = req.query
+router.get("/info/list", verifyTokenAdmin, async (req: Request | any, res: Response) => {
+    const { user_id, type, sort_column, sort_direction, page, limit, search_key } = req.query; //default show the new jobs only 
     const controller = new AdminUserController(req, res)
-    const result: ApiResponse = await controller.getDashboardData(past_day);
+    const result: ApiResponse = await controller.userInfoList(user_id, type, sort_column, sort_direction, page, limit, search_key);
     return showOutput(res, result, result.code)
-
 })
+
+// router.get('/dashboard', verifyTokenAdmin, async (req: Request | any, res: Response) => {
+//     const { past_day } = req.query
+//     const controller = new AdminUserController(req, res)
+//     const result: ApiResponse = await controller.getDashboardData(past_day);
+//     return showOutput(res, result, result.code)
+
+// })
 
 
 

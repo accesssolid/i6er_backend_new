@@ -16,7 +16,7 @@ import adminAuthModel from '../../models/Admin/admin.auth.model';
 const AdminAuthHandler = {
 
     login: async (data: any): Promise<ApiResponse> => {
-        const { email, password, os_type } = data;
+        const { email, password } = data;
 
         const exists = await findOne(adminModel, { email });
         if (!exists.status) {
@@ -28,34 +28,12 @@ const AdminAuthHandler = {
             return showResponse(false, responseMessage.common.password_incorrect, null, statusCodes.API_ERROR)
         }
 
-        const os_update = await findOneAndUpdate(adminModel, { _id: exists?.data?._id }, { os_type })
-        if (!os_update.status) {
-            return showResponse(false, responseMessage.users.login_error, null, statusCodes.API_ERROR)
-        }
-
         const token = await generateJwtToken(exists.data._id, { user_type: 'admin', type: "access" }, APP.ACCESS_EXPIRY)
-        const refreshToken = await generateJwtToken(exists.data._id, { user_type: 'admin', type: "access" }, APP.REFRESH_EXPIRY)
+        const refresh_token = await generateJwtToken(exists.data._id, { user_type: 'admin', type: "access" }, APP.REFRESH_EXPIRY)
 
         delete exists.data.password
-        return showResponse(true, responseMessage.admin.login_success, { ...exists.data, token, refreshToken }, statusCodes.SUCCESS)
-    },
-
-    register: async (data: any): Promise<ApiResponse> => {
-        const { email, password } = data;
-        // check if user exists
-        const exists = await findOne(adminModel, { email });
-        if (exists.status) {
-            return showResponse(false, responseMessage.common.email_already, null, statusCodes.API_ERROR)
-        }
-        data.password = await commonHelper.bycrptPasswordHash(password);
-
-        const adminRef = new adminModel(data)
-        const save = await createOne(adminRef)
-        if (!save.status) {
-            return showResponse(false, responseMessage.common.error_while_create_acc, null, statusCodes.API_ERROR)
-        }
-
-        return showResponse(true, responseMessage.admin.admin_created, null, statusCodes.SUCCESS)
+        delete exists.data.otp
+        return showResponse(true, responseMessage.admin.login_success, { ...exists.data, token, refresh_token }, statusCodes.SUCCESS)
     },
 
     forgotPassword: async (data: any): Promise<ApiResponse> => {
@@ -63,7 +41,7 @@ const AdminAuthHandler = {
         // check if admin exists
         const exists = await findOne(adminModel, { email });
         if (!exists.status) {
-            return showResponse(false, responseMessage.admin.invalid_admin, null, statusCodes.API_ERROR)
+            return showResponse(false, responseMessage.users.not_registered, null, statusCodes.API_ERROR)
         }
 
         const otp = commonHelper.generateOtp();
@@ -92,12 +70,16 @@ const AdminAuthHandler = {
     },
 
     resetPassword: async (data: any): Promise<ApiResponse> => {
-        const { email, new_password } = data;
-        const queryObject = { email, status: { $ne: 2 } }
+        const { email, new_password, otp } = data;
+        const queryObject = { email }
 
         const result = await findOne(adminModel, queryObject);
         if (!result.status) {
-            return showResponse(false, `${responseMessage.users.invalid_user} or email`, null, statusCodes.API_ERROR);
+            return showResponse(false, responseMessage.users.not_registered, null, statusCodes.API_ERROR);
+        }
+
+        if (result.data?.otp !== Number(otp)) {
+            return showResponse(false, responseMessage.users.invalid_otp, null, statusCodes.API_ERROR);
         }
 
         const hashed = await commonHelper.bycrptPasswordHash(new_password)
@@ -117,7 +99,8 @@ const AdminAuthHandler = {
     verifyOtp: async (data: any): Promise<ApiResponse> => {
         const { email, otp } = data;
 
-        const queryObject = { email, otp, status: { $ne: 2 } }
+        const queryObject = { email, otp }
+
         const findUser = await findOne(adminModel, queryObject)
         if (findUser.status) {
             await findOneAndUpdate(adminModel, queryObject, { is_verified: true })
@@ -129,11 +112,11 @@ const AdminAuthHandler = {
 
     resendOtp: async (data: any): Promise<ApiResponse> => {
         const { email } = data;
-        const queryObject = { email, status: { $ne: USER_STATUS.DELETED } }
+        const queryObject = { email }
 
         const result = await findOne(adminModel, queryObject);
         if (!result.status) {
-            return showResponse(false, responseMessage.users.invalid_email, null, statusCodes.API_ERROR);
+            return showResponse(false, responseMessage.users.not_registered, null, statusCodes.API_ERROR);
         }
 
         const otp = commonHelper.generateOtp();
@@ -169,8 +152,8 @@ const AdminAuthHandler = {
             return showResponse(false, responseMessage.admin.invalid_admin, null, statusCodes.API_ERROR)
         }
 
-        const isValid = await commonHelper.verifyBycryptHash(old_password, exists.data?.password);
-        if (!isValid) {
+        const comparePassword = await commonHelper.verifyBycryptHash(old_password, exists.data?.password);
+        if (!comparePassword) {
             return showResponse(false, responseMessage.users.invalid_password, null, statusCodes.API_ERROR)
         }
 
@@ -185,12 +168,12 @@ const AdminAuthHandler = {
 
     getAdminDetails: async (adminId: string): Promise<ApiResponse> => {
 
-        const getResponse = await findOne(adminModel, { _id: adminId }, { password: 0 });
-        if (!getResponse.status) {
+        const result = await findOne(adminModel, { _id: adminId }, { password: 0, otp: 0, });
+        if (!result.status) {
             return showResponse(false, responseMessage.admin.invalid_admin, null, statusCodes.API_ERROR)
         }
 
-        return showResponse(true, responseMessage.admin.admin_details, getResponse.data, statusCodes.SUCCESS)
+        return showResponse(true, responseMessage.admin.admin_details, result.data, statusCodes.SUCCESS)
 
     },
 
@@ -232,6 +215,7 @@ const AdminAuthHandler = {
         const result = await findByIdAndUpdate(adminModel, updateObj, admin_id);
         if (result.status) {
             delete result.data.password
+            delete result.data.otp
             return showResponse(true, responseMessage.admin.admin_details_updated, result.data, statusCodes.SUCCESS);
         }
         return showResponse(false, responseMessage.admin.admin_details_update_error, null, statusCodes.API_ERROR);

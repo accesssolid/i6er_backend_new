@@ -1,7 +1,7 @@
 import { Request, Response } from 'express'
 import { Route, Controller, Tags, Body, Get, Security, Query, Put } from 'tsoa'
 import { ApiResponse } from '../../utils/interfaces.util';
-import { validateUpdateUserStatus, validateGetCustomerDetails, validateDashboard, } from '../../validations/Admin/admin.user.validator';
+import { validateUpdateUserStatus, validateGetCustomerDetails, validateUserInfoListAdmin, } from '../../validations/Admin/admin.user.validator';
 import handler from '../../handlers/Admin/admin.user.handler'
 import { showResponse } from '../../utils/response.util';
 import statusCodes from '../../constants/statusCodes'
@@ -53,6 +53,7 @@ export default class AdminUserController extends Controller {
 
     /**
 * Update User Status
+* 1 for active 2 for delete 3 for deactivate
 */
     @Security('Bearer')
     @Put("/status")
@@ -69,22 +70,43 @@ export default class AdminUserController extends Controller {
     }
     //ends
 
-    /**
-* Get Dashboard data
-*/
-    @Security('Bearer')
-    @Get("/dashboard")
-    public async getDashboardData(@Query() past_day?: string): Promise<ApiResponse> {
 
-        const validate = validateDashboard({ past_day });
+    /**
+ * List User Info Medics And other
+ * type == 'allergy', 'medication', 'contacts'
+ *
+ */
+    @Security('Bearer')
+    @Get("/info/list")
+    public async userInfoList(@Query() user_id: string, @Query() type: string, @Query() sort_column?: string, @Query() sort_direction?: string, @Query() page?: number, @Query() limit?: number, @Query() search_key?: string): Promise<ApiResponse> {
+        const body = { user_id, type, sort_column, sort_direction, page, limit, search_key }
+
+        const validate = validateUserInfoListAdmin(body);
         if (validate.error) {
             return showResponse(false, validate.error.message, null, statusCodes.VALIDATION_ERROR)
         }
 
-        const wrappedFunc = tryCatchWrapper(handler.getDashboardData);
-        return wrappedFunc(past_day); // Invoking the wrapped function 
-
+        const wrappedFunc = tryCatchWrapper(handler.userInfoList);
+        return wrappedFunc(body); // Invoking the wrapped function 
     }
+    //ends
+
+    //     /**
+    // * Get Dashboard data
+    // */
+    //     @Security('Bearer')
+    //     @Get("/dashboard")
+    //     public async getDashboardData(@Query() past_day?: string): Promise<ApiResponse> {
+
+    //         const validate = validateDashboard({ past_day });
+    //         if (validate.error) {
+    //             return showResponse(false, validate.error.message, null, statusCodes.VALIDATION_ERROR)
+    //         }
+
+    //         const wrappedFunc = tryCatchWrapper(handler.getDashboardData);
+    //         return wrappedFunc(past_day); // Invoking the wrapped function 
+
+    //     }
     //ends
 }
 
