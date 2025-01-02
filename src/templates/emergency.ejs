@@ -30,54 +30,67 @@
         />
       </div>
 
-      <span
+      <div
         style="
-          font-weight: 700;
-          font-size: 22px;
-          text-align: center;
-          margin-top: 20px;
+          text-align: left;
+          margin: 5px auto;
+          width: 90%;
+          font-size: larger;
+          font-weight: 600;
         "
       >
         Dear <%= emergency_contact_name %>,
-      </span>
+      </div>
 
-      <p
+      <div
         style="
-          font-weight: bold;
-          font-family: Arial;
-          font-size: 16px;
-          text-align: center;
-          margin-top: 20px;
+          text-align: left;
+          margin: 5px auto;
+          font-size: 14px;
+          width: 90%;
+          font-weight: 600;
         "
       >
-        I am writing to inform you that <%= user_name %> has recently made a call to the
-        emergency number. Please be prepared for possible medical assistance.
-        Their current location is: <%= location %>.
-      </p>
+        I am writing to inform you that <%= user_name %> has recently made a
+        call to the emergency number. Please be prepared for possible medical
+        assistance.
+        <div>Their current location is: <%= location %>.</div>
+      </div>
 
-      <p
+      <div
         style="
-          font-family: Arial;
+          text-align: left;
+          margin: 5px auto;
           font-size: 14px;
-          text-align: center;
-          margin-top: 20px;
+          width: 90%;
+          margin-top: 15px;
         "
       >
         Below are the critical medical details you need to know. Please take
         immediate action as required.
         <br /><br />
-      </p>
+      </div>
       <div>
-        <div style="width: 80%; text-align: left; margin: 5px auto; font-size: 14px">
-          <strong>Blood Group:</strong> <%= blood_group ? blood_group : 'Unknown' %> <br /><br />
-          <strong>Age:</strong> <%= age ? age + ' years' : 'Not specified' %> <br /><br />
-          <strong>Allergies:</strong> <%= allergies.length > 0 ? allergies.join(', ') : 'None' %> <br /><br />
+        <div
+          style="
+            width: 90%;
+            text-align: left;
+            margin: 5px auto;
+            font-size: 14px;
+          "
+        >
+          <strong>Blood Group:</strong> <%= blood_group ? blood_group :
+          'Unknown' %> <br /><br />
+          <strong>Age:</strong> <%= age ? age + ' years' : 'Not specified' %>
+          <br /><br />
+          <strong>Allergies:</strong> <%= allergies.length > 0 ?
+          allergies.join(', ') : 'None' %> <br /><br />
           <strong>Medications</strong>
         </div>
 
         <table
           style="
-            width: 80%;
+            width: 90%;
             margin: 5px auto;
             border-collapse: collapse;
             text-align: left;
@@ -93,20 +106,32 @@
             </tr>
           </thead>
           <tbody>
-            <% if (medications.length > 0) { %>
-              <% medications.forEach(function(medication) { %>
-                <tr>
-                  <td style="padding: 10px; border: 1px solid #ddd"><%= medication.name %></td>
-                  <td style="padding: 10px; border: 1px solid #ddd"><%= medication.dose %></td>
-                  <td style="padding: 10px; border: 1px solid #ddd"><%= medication.reason %></td>
-                </tr>
-              <% }); %>
-            <% } else { %>
-              <tr>
-                <td colspan="3" style="padding: 10px; border: 1px solid #ddd; text-align: center;">
-                  No medications listed
-                </td>
-              </tr>
+            <% if (medications.length > 0) { %> <%
+            medications.forEach(function(medication) { %>
+            <tr>
+              <td style="padding: 10px; border: 1px solid #ddd">
+                <%= medication.name %>
+              </td>
+              <td style="padding: 10px; border: 1px solid #ddd">
+                <%= medication.dose %>
+              </td>
+              <td style="padding: 10px; border: 1px solid #ddd">
+                <%= medication.reason %>
+              </td>
+            </tr>
+            <% }); %> <% } else { %>
+            <tr>
+              <td
+                colspan="3"
+                style="
+                  padding: 10px;
+                  border: 1px solid #ddd;
+                  text-align: center;
+                "
+              >
+                No medications listed
+              </td>
+            </tr>
             <% } %>
           </tbody>
         </table>

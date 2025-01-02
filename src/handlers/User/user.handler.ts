@@ -417,9 +417,8 @@ const UserHandler = {
 
             const emailSend = emergencyContacts?.data?.map(async (contact: any) => {
                 const emergency_contact_name = contact?.name
-                const locationCoordinates = location?.coordinates ? `longitude:${location.coordinates[0]}, latitude:${location.coordinates[1]}` : '';
-
-                const email_payload = { project_name: APP.PROJECT_NAME, user_name, cidLogo: 'unique@Logo', emergency_contact_name, location: locationCoordinates, allergies, medications, blood_group, age }
+                const locationDetails = location?.coordinates ? `${location?.name} longitude:${location.coordinates[0]}, latitude:${location.coordinates[1]}` : '';
+                const email_payload = { project_name: APP.PROJECT_NAME, user_name, cidLogo: 'unique@Logo', emergency_contact_name, location: locationDetails, allergies, medications, blood_group, age }
                 const template = await ejs.renderFile(path.join(process.cwd(), './src/templates', 'emergency.ejs'), email_payload);
                 const logoPath = path.join(process.cwd(), './public', 'logo.png');
 
