@@ -38,13 +38,13 @@ router.get("/info/list", verifyTokenAdmin, async (req: Request | any, res: Respo
     return showOutput(res, result, result.code)
 })
 
-// router.get('/dashboard', verifyTokenAdmin, async (req: Request | any, res: Response) => {
-//     const { past_day } = req.query
-//     const controller = new AdminUserController(req, res)
-//     const result: ApiResponse = await controller.getDashboardData(past_day);
-//     return showOutput(res, result, result.code)
+router.get('/dashboard', verifyTokenAdmin, async (req: Request | any, res: Response) => {
+    const { past_day } = req.query
+    const controller = new AdminUserController(req, res)
+    const result: ApiResponse = await controller.getDashboardData(past_day);
+    return showOutput(res, result, result.code)
 
-// })
+})
 
 
 

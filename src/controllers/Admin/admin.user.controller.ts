@@ -1,7 +1,7 @@
 import { Request, Response } from 'express'
 import { Route, Controller, Tags, Body, Get, Security, Query, Put } from 'tsoa'
 import { ApiResponse } from '../../utils/interfaces.util';
-import { validateUpdateUserStatus, validateGetCustomerDetails, validateUserInfoListAdmin, } from '../../validations/Admin/admin.user.validator';
+import { validateUpdateUserStatus, validateGetCustomerDetails, validateUserInfoListAdmin, validateDashboard, } from '../../validations/Admin/admin.user.validator';
 import handler from '../../handlers/Admin/admin.user.handler'
 import { showResponse } from '../../utils/response.util';
 import statusCodes from '../../constants/statusCodes'
@@ -91,22 +91,22 @@ export default class AdminUserController extends Controller {
     }
     //ends
 
-    //     /**
-    // * Get Dashboard data
-    // */
-    //     @Security('Bearer')
-    //     @Get("/dashboard")
-    //     public async getDashboardData(@Query() past_day?: string): Promise<ApiResponse> {
+    /**
+* Get Dashboard data
+*/
+    @Security('Bearer')
+    @Get("/dashboard")
+    public async getDashboardData(@Query() past_day?: string): Promise<ApiResponse> {
 
-    //         const validate = validateDashboard({ past_day });
-    //         if (validate.error) {
-    //             return showResponse(false, validate.error.message, null, statusCodes.VALIDATION_ERROR)
-    //         }
+        const validate = validateDashboard({ past_day });
+        if (validate.error) {
+            return showResponse(false, validate.error.message, null, statusCodes.VALIDATION_ERROR)
+        }
 
-    //         const wrappedFunc = tryCatchWrapper(handler.getDashboardData);
-    //         return wrappedFunc(past_day); // Invoking the wrapped function 
+        const wrappedFunc = tryCatchWrapper(handler.getDashboardData);
+        return wrappedFunc(past_day); // Invoking the wrapped function 
 
-    //     }
+    }
     //ends
 }
 
