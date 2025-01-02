@@ -6,8 +6,6 @@ import { showResponse } from '../../utils/response.util';
 import statusCodes from '../../constants/statusCodes'
 import { tryCatchWrapper } from '../../utils/config.util';
 import { validateAddUpdateAllergy, validateAddUpdateContacts, validateAddUpdateMedications, validateDeleteUserInfo, validateUpdateSetting, validateUserInfoDetails, validateUserInfoList } from '../../validations/User/user.validator';
-//validateAddAllergy, validateAddEmergencyContact, validateAddMedication,
-//validateUpdateAllergy, validateUpdateEmergencyContact, validateUpdateMedication,
 @Tags('User Routes')
 @Route('/user')
 

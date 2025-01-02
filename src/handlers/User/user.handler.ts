@@ -403,7 +403,15 @@ const UserHandler = {
         const userData = findUser?.data
 
         const emergencyContacts = await findAll(userEmergencyContact, { user_id })
+        const userAllergies = await findAll(userAllergiesModel, { user_id }, 'name')
+        const userMedications = await findAll(userMedicationModel, { user_id }, 'name dose reason')
+        const allergies = userAllergies?.data?.map((aller: any) => {
+            return aller?.name
+        });
+        const medications = userMedications.data
+        const blood_group = userData?.blood_group
         const user_name = userData?.display_name
+        const age = commonHelper.calculateAgeFromUnix(userData?.dob) ?? 0
 
         if (emergencyContacts.status && emergencyContacts?.data?.length > 0) {
 
@@ -411,7 +419,7 @@ const UserHandler = {
                 const emergency_contact_name = contact?.name
                 const locationCoordinates = location?.coordinates ? `longitude:${location.coordinates[0]}, latitude:${location.coordinates[1]}` : '';
 
-                const email_payload = { project_name: APP.PROJECT_NAME, user_name, cidLogo: 'unique@Logo', emergency_contact_name, location: locationCoordinates }
+                const email_payload = { project_name: APP.PROJECT_NAME, user_name, cidLogo: 'unique@Logo', emergency_contact_name, location: locationCoordinates, allergies, medications, blood_group, age }
                 const template = await ejs.renderFile(path.join(process.cwd(), './src/templates', 'emergency.ejs'), email_payload);
                 const logoPath = path.join(process.cwd(), './public', 'logo.png');
 
