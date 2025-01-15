@@ -268,11 +268,10 @@ export default class UserController extends Controller {
     /**
 * Trigger Emergency Notification
 */
-    @Security('Bearer')
     @Post("/emergency/trigger")
-    public async emergencyNotificationTrigger(@Body() request: { location: userLocationInterface }): Promise<ApiResponse> {
+    public async emergencyNotificationTrigger(@Body() request: { location: userLocationInterface, user_id: string }): Promise<ApiResponse> {
         const wrappedFunc = tryCatchWrapper(handler.emergencyNotificationTrigger);
-        return wrappedFunc(request, this.userId); // Invoking the wrapped function 
+        return wrappedFunc(request); // Invoking the wrapped function 
     }
     //ends
 

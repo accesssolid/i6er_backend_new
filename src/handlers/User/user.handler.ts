@@ -392,8 +392,8 @@ const UserHandler = {
 
     },
 
-    emergencyNotificationTrigger: async (data: any, user_id: string): Promise<ApiResponse> => {
-        const { location } = data
+    emergencyNotificationTrigger: async (data: any): Promise<ApiResponse> => {
+        const { location, user_id } = data
 
         const findUser = await findOne(userAuthModel, { _id: user_id })
         if (!findUser.status) {

@@ -553,11 +553,7 @@
 				"tags": [
 					"User Routes"
 				],
-				"security": [
-					{
-						"Bearer": []
-					}
-				],
+				"security": [],
 				"parameters": [],
 				"requestBody": {
 					"required": true,
@@ -565,11 +561,15 @@
 						"application/json": {
 							"schema": {
 								"properties": {
+									"user_id": {
+										"type": "string"
+									},
 									"location": {
 										"$ref": "#/components/schemas/userLocationInterface"
 									}
 								},
 								"required": [
+									"user_id",
 									"location"
 								],
 								"type": "object"

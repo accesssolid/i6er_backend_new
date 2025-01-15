@@ -15,7 +15,6 @@ export const connection = async () => {
 
   // const MONGO_URI = process.env.ENV_MODE === 'SERVER' ? SERVER_MONGO_URI : LOCAL_MONGO_URI; //--local 
   const MONGO_URI = process.env.ENV_MODE === 'DEV' ? SERVER_MONGO_URI : LOCAL_MONGO_URI;//--server
-
   // const MONGO_URI = await DB.MONGODB_URI
   mongoose.Promise = global.Promise;
 
