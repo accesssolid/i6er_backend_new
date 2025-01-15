@@ -553,6 +553,51 @@
 				"tags": [
 					"User Routes"
 				],
+				"security": [
+					{
+						"Bearer": []
+					}
+				],
+				"parameters": [],
+				"requestBody": {
+					"required": true,
+					"content": {
+						"application/json": {
+							"schema": {
+								"properties": {
+									"location": {
+										"$ref": "#/components/schemas/userLocationInterface"
+									}
+								},
+								"required": [
+									"location"
+								],
+								"type": "object"
+							}
+						}
+					}
+				}
+			}
+		},
+		"/user/emergency/call": {
+			"post": {
+				"operationId": "WithoutTokenEmergencyNotificationTrigger",
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ApiResponse"
+								}
+							}
+						}
+					}
+				},
+				"description": "Without token Trigger Emergency Notification",
+				"tags": [
+					"User Routes"
+				],
 				"security": [],
 				"parameters": [],
 				"requestBody": {

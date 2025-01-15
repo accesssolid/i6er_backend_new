@@ -392,8 +392,8 @@ const UserHandler = {
 
     },
 
-    emergencyNotificationTrigger: async (data: any): Promise<ApiResponse> => {
-        const { location, user_id } = data
+    emergencyNotificationTrigger: async (data: any, user_id: string): Promise<ApiResponse> => {
+        const { location } = data
 
         const findUser = await findOne(userAuthModel, { _id: user_id })
         if (!findUser.status) {
@@ -443,64 +443,56 @@ const UserHandler = {
 
     },
 
-    // emergencyNotificationTrigger: async (data: any, user_id: string): Promise<ApiResponse> => {
-    //     const { location } = data
+    withoutTokenEmergencyNotificationTrigger: async (data: any): Promise<ApiResponse> => {
+        const { location, user_id } = data
 
-    //     const findUser = await findOne(userAuthModel, { _id: user_id })
-    //     if (!findUser.status) {
-    //         return showResponse(false, responseMessage.users.invalid_user, null, statusCodes.API_ERROR);
-    //     }
+        const findUser = await findOne(userAuthModel, { _id: user_id })
+        if (!findUser.status) {
+            return showResponse(false, responseMessage.users.invalid_user, null, statusCodes.API_ERROR);
+        }
 
-    //     const userData = findUser?.data
+        const userData = findUser?.data
 
-    //     const emergencyContacts = await findAll(userEmergencyContact, { user_id })
-    //     const userAllergies = await findAll(userAllergiesModel, { user_id })
-    //     const userMedications = await findAll(userMedicationModel, { user_id })
-    //     const allergies = userAllergies?.data?.map((aller: any) => {
-    //         // Destructuring to remove unwanted fields
-    //         const { createdAt, updatedAt, user_id, _id, ...cleanedAllergy } = aller;
-    //         return cleanedAllergy; // Returning the object without the excluded fields
-    //     });
+        const emergencyContacts = await findAll(userEmergencyContact, { user_id })
+        const userAllergies = await findAll(userAllergiesModel, { user_id }, 'name')
+        const userMedications = await findAll(userMedicationModel, { user_id }, 'name dose reason')
+        const allergies = userAllergies?.data?.map((aller: any) => {
+            return aller?.name
+        });
+        const medications = userMedications.data
+        const blood_group = userData?.blood_group
+        const user_name = userData?.display_name
+        const age = commonHelper.calculateAgeFromUnix(userData?.dob) ?? 0
 
-    //     const medications = userMedications?.data?.map((med: any) => {
-    //         // Destructuring to remove unwanted fields
-    //         const { createdAt, updatedAt, user_id, _id, ...cleanedMedication } = med;
-    //         return cleanedMedication; // Returning the object without the excluded fields
-    //     });
-    //     const blood_group = userData?.blood_group
-    //     const user_name = userData?.display_name
-    //     const age = commonHelper.calculateAgeFromUnix(userData?.dob) ?? 0
+        if (emergencyContacts.status && emergencyContacts?.data?.length > 0) {
 
-    //     if (emergencyContacts.status && emergencyContacts?.data?.length > 0) {
+            const emailSend = emergencyContacts?.data?.map(async (contact: any) => {
+                const emergency_contact_name = contact?.name
+                const locationDetails = location?.coordinates ? `${location?.name} longitude:${location.coordinates[0]}, latitude:${location.coordinates[1]}` : '';
+                const email_payload = { project_name: APP.PROJECT_NAME, user_name, cidLogo: 'unique@Logo', emergency_contact_name, location: locationDetails, allergies, medications, blood_group, age }
+                const template = await ejs.renderFile(path.join(process.cwd(), './src/templates', 'emergency.ejs'), email_payload);
+                const logoPath = path.join(process.cwd(), './public', 'logo.png');
 
-    //         const emailSend = emergencyContacts?.data?.map(async (contact: any) => {
+                const to = `${contact?.email}`
+                const subject = `Urgent: Emergency Call Alert for ${user_name}`
 
+                const attachments = [
+                    {
+                        filename: 'logo.png',
+                        path: logoPath,
+                        cid: 'unique@Logo',
+                    }
+                ]
 
-    //             const email_payload = { project_name: APP.PROJECT_NAME, user_name, cidLogo: 'unique@Logo', allergies, medications, blood_group, age }
-    //             const template = await ejs.renderFile(path.join(process.cwd(), './src/templates', 'emergency.ejs'), email_payload);
-    //             const logoPath = path.join(process.cwd(), './public', 'logo.png');
+                const forgotPassMail = await services.emailService.nodemail(to, subject, template, attachments)
+            })
 
-    //             const to = `${contact?.email}`
-    //             const subject = `Emergency Email`
-
-    //             const attachments = [
-    //                 {
-    //                     filename: 'logo.png',
-    //                     path: logoPath,
-    //                     cid: 'unique@Logo',
-    //                 }
-    //             ]
-
-    //             const forgotPassMail = await services.emailService.nodemail(to, subject, template, attachments)
-    //             console.log(forgotPassMail, "forgotmaill")
-    //         })
-
-    //     }//ends
+        }//ends
 
 
-    //     return showResponse(true, 'Emergency Email Sent Successfully', null, statusCodes.SUCCESS);
+        return showResponse(true, 'Emergency Email Sent Successfully', null, statusCodes.SUCCESS);
 
-    // },
+    },
 
 
 }
