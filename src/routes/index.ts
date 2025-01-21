@@ -5,6 +5,7 @@ const Route = express.Router();
 import adminAuthRoutes from './Admin/admin.auth.route'
 import adminCommonRoutes from './Admin/admin.common.route'
 import adminUserRoutes from './Admin/admin.user.route'
+import adminContactUsRoutes from './Admin/admin.contactus.route'
 
 //user and admin all usertype common routes
 import commonRoutes from './Common/common.route'
@@ -20,6 +21,7 @@ import userRoutes from './User/user.route'
 Route.use('/admin/common', adminCommonRoutes);
 Route.use('/admin/user', adminUserRoutes);
 Route.use('/admin/auth', adminAuthRoutes);
+Route.use('/admin/contactus', adminContactUsRoutes);
 
 //user routes
 Route.use('/user/auth', userAuthRoutes);
