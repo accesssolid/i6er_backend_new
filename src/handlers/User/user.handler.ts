@@ -1,6 +1,6 @@
 import { ApiResponse } from "../../utils/interfaces.util";
 import { showResponse } from "../../utils/response.util";
-import { findOne, findByIdAndUpdate, insertMany, findOneAndDelete, findAll, getCount, deleteMany } from "../../helpers/db.helpers";
+import { findOne, findByIdAndUpdate, insertMany, findOneAndDelete, findAll, getCount, deleteMany, createOne } from "../../helpers/db.helpers";
 import * as commonHelper from "../../helpers/common.helper";
 import { APP, INFO_TYPE } from '../../constants/app.constant';
 import services from '../../services';
@@ -12,6 +12,7 @@ import userEmergencyContact from '../../models/User/user.emergencyContact';
 import userAuthModel from '../../models/User/user.auth.model';
 import path from 'path'
 import ejs from 'ejs'
+import adminContactusModel from "../../models/Admin/admin.contactus.model";
 
 const infoModel = {
     [INFO_TYPE.ALLERGY]: userAllergiesModel,
@@ -103,66 +104,6 @@ const UserHandler = {
         return showResponse(true, responseMessage.common.update_sucess, inserted?.data, statusCodes.SUCCESS);
 
     },
-
-    // addAllergy: async (data: any, user_id: string): Promise<ApiResponse> => {
-    //     const { name } = data
-
-    //     const find = await findOne(userAllergiesModel, { name, user_id })
-    //     if (find.status) {
-    //         return showResponse(false, responseMessage.common.already_existed, null, statusCodes.API_ERROR);
-    //     }
-
-    //     data.user_id = user_id
-    //     const ref = new userAllergiesModel(data)
-    //     const result = await createOne(ref)
-    //     if (!result.status) {
-    //         return showResponse(false, responseMessage.common.added_err, null, statusCodes.API_ERROR);
-    //     }
-
-    //     return showResponse(true, responseMessage.common.added_success, result.data, statusCodes.SUCCESS);
-
-    // },
-    // addMedication: async (data: any, user_id: string): Promise<ApiResponse> => {
-    //     const { name } = data
-
-    //     const find = await findOne(userMedicationModel, { name, user_id })
-    //     if (find.status) {
-    //         return showResponse(false, `${name} ${responseMessage.common.already_existed}`, null, statusCodes.API_ERROR);
-    //     }
-
-    //     data.user_id = user_id
-    //     const ref = new userMedicationModel(data)
-    //     const result = await createOne(ref)
-    //     if (!result.status) {
-    //         return showResponse(false, responseMessage.common.added_err, null, statusCodes.API_ERROR);
-    //     }
-
-    //     return showResponse(true, responseMessage.common.added_success, result.data, statusCodes.SUCCESS);
-
-    // },
-
-    // addEmergencyContact: async (data: any, user_id: string): Promise<ApiResponse> => {
-    //     const { name, phone, email } = data
-
-    //     const find = await findOne(userEmergencyContact, { email, user_id })
-    //     if (find.status) {
-    //         return showResponse(false, `email ${responseMessage.common.already_existed}`, null, statusCodes.API_ERROR);
-    //     }
-
-    //     if (find.data?.phone === phone) {
-    //         return showResponse(false, `phone ${responseMessage.common.already_existed}`, null, statusCodes.API_ERROR);
-    //     }
-
-    //     data.user_id = user_id
-    //     const ref = new userEmergencyContact(data)
-    //     const result = await createOne(ref)
-    //     if (!result.status) {
-    //         return showResponse(false, responseMessage.common.added_err, null, statusCodes.API_ERROR);
-    //     }
-
-    //     return showResponse(true, responseMessage.common.added_success, result.data, statusCodes.SUCCESS);
-
-    // },
 
     userInfoList: async (data: any, user_id: string): Promise<ApiResponse> => {
         const { type, sort_column = "createdAt", sort_direction = "desc", page, limit, search_key = "" } = data
@@ -433,7 +374,7 @@ const UserHandler = {
                     }
                 ]
 
-                const forgotPassMail = await services.emailService.nodemail(to, subject, template, attachments)
+                await services.emailService.nodemail(to, subject, template, attachments)
             })
 
         }//ends
@@ -484,7 +425,7 @@ const UserHandler = {
                     }
                 ]
 
-                const forgotPassMail = await services.emailService.nodemail(to, subject, template, attachments)
+                await services.emailService.nodemail(to, subject, template, attachments)
             })
 
         }//ends
@@ -494,6 +435,16 @@ const UserHandler = {
 
     },
 
+    contactUs: async (data: any): Promise<ApiResponse> => {
+        const contactUsRef = new adminContactusModel(data);
+
+        const response = await createOne(contactUsRef);
+        if (!response.status) {
+            return showResponse(false, responseMessage?.common?.contactUs_error, null, statusCodes.API_ERROR)
+        }
+
+        return showResponse(true, responseMessage?.common?.contactUs_success, null, statusCodes.SUCCESS)
+    },
 
 }
 
