@@ -2,6 +2,7 @@ import mongoose from "mongoose";
 // import { DB } from "../constants/app.constant";
 import dotenv from "dotenv";
 import path from "path";
+import { AWS_CREDENTIAL, DB } from "../constants/app.constant";
 const envConfig = dotenv.config({ path: path.resolve(__dirname, "../../.env") });
 
 if (envConfig.error) {
@@ -9,13 +10,11 @@ if (envConfig.error) {
 }
 
 export const connection = async () => {
+  const MONGO_URI = await DB.MONGODB_URI
+  const ACCESSID = await AWS_CREDENTIAL.ACCESSID
 
-  const LOCAL_MONGO_URI = 'mongodb://i6eR_Dev:i6eR_1077@223.178.220.83/i6eR_Dev'
-  const SERVER_MONGO_URI = 'mongodb://i6eR_Dev:i6eR_1077@localhost/i6eR_Dev'
+  console.log(ACCESSID, "accesssssssu")
 
-  // const MONGO_URI = process.env.ENV_MODE === 'SERVER' ? SERVER_MONGO_URI : LOCAL_MONGO_URI; //--local 
-  const MONGO_URI = process.env.ENV_MODE === 'DEV' ? SERVER_MONGO_URI : LOCAL_MONGO_URI;//--server
-  // const MONGO_URI = await DB.MONGODB_URI
   mongoose.Promise = global.Promise;
 
   await mongoose.connect(MONGO_URI as string, {} as mongoose.ConnectOptions)

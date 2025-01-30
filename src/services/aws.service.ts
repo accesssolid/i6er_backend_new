@@ -2,8 +2,8 @@ import NodeCache from "node-cache";
 import AWS from 'aws-sdk'
 // import * as fsHelper from '../helpers/fs.helper'
 // AWS.config.update({
-//     region: "us-east-1",
-//     credentials: new AWS.SharedIniFileCredentials({ profile: "digismart" }),
+//     region: "us-west-2",
+//     credentials: new AWS.SharedIniFileCredentials({ profile: "i6er" }),
 // });
 import path from 'path'
 import responseMessage from "../constants/ResponseMessage";
@@ -19,6 +19,7 @@ const ssm = new AWS.SSM()
 
 
 const getParameterFromAWS = (input: getParameter) => {
+    console.log(input,"inputtt")
     const cachedValue = cache.get(input?.name);
     if (cachedValue) {
         // Return the cached value
@@ -68,7 +69,7 @@ const getSecretFromAWS = async (secret_key_param: string) => {
     return new Promise((resolve) => {
         try {
             const client = new AWS.SecretsManager({
-                region: 'us-east-1',
+                region: 'us-west-2',
             });
 
             client.getSecretValue({ SecretId: secret_key_param }, (err: any, data: any) => {
@@ -341,10 +342,10 @@ const uploadToS3 = async (files: any[], key?: string) => {
         });
 
         const bucketName = await AWS_CREDENTIAL.BUCKET_NAME;
-       console.log(bucketName,"bucketname")
-       console.log(await AWS_CREDENTIAL.REGION,"regiosss")
-       console.log(await AWS_CREDENTIAL.ACCESSID,"accessidd")
-       console.log(await AWS_CREDENTIAL.AWS_SECRET,"secrettttt")
+        console.log(bucketName, "bucketname")
+        console.log(await AWS_CREDENTIAL.REGION, "regiosss")
+        console.log(await AWS_CREDENTIAL.ACCESSID, "accessidd")
+        console.log(await AWS_CREDENTIAL.AWS_SECRET, "secrettttt")
 
         const s3UploadPromises = files.map((file: any) => {
             return new Promise((resolve) => {

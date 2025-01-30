@@ -12,7 +12,7 @@ if (envConfig.error) {
 //1st parm is Environment mode -> DEV,PROD,STAG 
 //2nd parm is project name 
 //3rd parm is project Initial 
-const ENV_PARMAS = getEnvironmentParams(process.env.ENV_MODE, 'BOILERPLATE', 'BP')
+const ENV_PARMAS = getEnvironmentParams(process.env.ENV_MODE, 'I6ER', 'I6R')
 console.log(ENV_PARMAS, "Parms For Aws_Parameter_store")
 
 const { ADMIN_EMAIL, ACCESSID, REGION, DB_URI, BUCKET, SMTP_APP_PASSWORD, STMP_EMAIL } = ENV_PARMAS
@@ -26,13 +26,13 @@ const APP: AppConstant = {
   PORT: process.env.PORT || 8000,
   API_PREFIX: process.env.API_PREFIX || "/api/v1",
   FRONTEND_URL: process.env.FRONTEND_URL || '',
-  BITBUCKET_URL: process.env.BITBUCKET_URL || '',
+  BITBUCKET_URL: process.env.BITBUCKET_URL || 'https://d26942j8134h69.cloudfront.net', //dev 
   OUTPUT_BITBUCKET_URL: process.env.OUTPUT_BITBUCKET_URL || '',
   JWT_SECRET: process.env.SECRET || "secret",
   ADMIN_CRED_EMAIL: ADMIN_EMAIL,
   FILE_SIZE: 100, //SPECIFY IN MB
   PROJECT_NAME: 'ie6r',
-  PROJECT_LOGO: 'file/file-1735028209184.webp'
+  PROJECT_LOGO: 'file/file-1738241111416.webp'
 };
 
 const DB: DbConstant = {
@@ -86,8 +86,8 @@ const initializeAwsCredential = async () => {
   // DB.MONGODB_URI = services.awsService.getParameterFromAWS({ name: DB_URI })
 
   APP.JWT_SECRET = services.awsService.getParameterFromAWS({ name: "API_SECRET" })
-  EMAIL_CREDENTIAL.SENDGRID_API = services.awsService.getParameterFromAWS({ name: STMP_EMAIL })
-  EMAIL_CREDENTIAL.SENDGRID_API_KEY = services.awsService.getParameterFromAWS({ name: SMTP_APP_PASSWORD })
+  // EMAIL_CREDENTIAL.SENDGRID_API = services.awsService.getParameterFromAWS({ name: STMP_EMAIL })
+  // EMAIL_CREDENTIAL.SENDGRID_API_KEY = services.awsService.getParameterFromAWS({ name: SMTP_APP_PASSWORD })
 
   // SMS_CREDENTIAL.TWILIO_AUTH_TOKEN = services.awsService.getParameterFromAWS({ name: 'TWILIO_AUTH_TOKEN' })
   // SMS_CREDENTIAL.TWILIO_AUTH_TOKEN = services.awsService.getParameterFromAWS({ name: 'TWILIO_AUTH_TOKEN' })
@@ -95,7 +95,7 @@ const initializeAwsCredential = async () => {
   AWS_CREDENTIAL = {
     ACCESSID: services.awsService.getParameterFromAWS({ name: ACCESSID }),
     REGION: services.awsService.getParameterFromAWS({ name: REGION }),
-    AWS_SECRET: services.awsService.getSecretFromAWS("digismart_secret"),
+    AWS_SECRET: services.awsService.getSecretFromAWS("i6er_secret"),
     BUCKET_NAME: services.awsService.getParameterFromAWS({ name: BUCKET }),
     COLLECTION_ID_AWS_REKOGNITION: process.env.COLLECTION_ID_AWS_REKOGNITION, //use it if want to use image search in project
   };
