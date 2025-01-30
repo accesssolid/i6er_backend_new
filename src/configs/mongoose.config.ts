@@ -11,9 +11,6 @@ if (envConfig.error) {
 
 export const connection = async () => {
   const MONGO_URI = await DB.MONGODB_URI
-  const ACCESSID = await AWS_CREDENTIAL.ACCESSID
-
-  console.log(ACCESSID, "accesssssssu")
 
   mongoose.Promise = global.Promise;
 

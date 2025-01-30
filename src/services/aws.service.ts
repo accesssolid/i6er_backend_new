@@ -19,7 +19,6 @@ const ssm = new AWS.SSM()
 
 
 const getParameterFromAWS = (input: getParameter) => {
-    console.log(input,"inputtt")
     const cachedValue = cache.get(input?.name);
     if (cachedValue) {
         // Return the cached value
