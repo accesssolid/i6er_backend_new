@@ -131,6 +131,29 @@
 		}
 	},
 	"paths": {
+		"/user/subscription/plan_list": {
+			"get": {
+				"operationId": "PlanList",
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ApiResponse"
+								}
+							}
+						}
+					}
+				},
+				"description": "Get Subscription plans list mobile side",
+				"tags": [
+					"User Subscription Routes"
+				],
+				"security": [],
+				"parameters": []
+			}
+		},
 		"/user/allergy/add/update": {
 			"put": {
 				"operationId": "AddOrUpdateAllergy",

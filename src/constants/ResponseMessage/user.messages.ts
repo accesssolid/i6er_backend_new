@@ -59,6 +59,11 @@ const user_messages = {
     otp_send: "Otp Send to your email successfully",
     otp_resend: "Otp resend to your email successfully",
 
+    subscription:{
+        plans_list:"Plan list found successfully",
+        empty_plans_list:"Empty plan list",
+    }
+
 }
 
 export = {

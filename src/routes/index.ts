@@ -13,6 +13,7 @@ import commonRoutes from './Common/common.route'
 //user routes
 import userAuthRoutes from './User/user.auth.route'
 import userRoutes from './User/user.route'
+import userSubscriptionRoutes from './User/user.subscription.route'
 
 
 // *********assign order of routes for swagger in last to show on first **********
@@ -26,6 +27,7 @@ Route.use('/admin/contactus', adminContactUsRoutes);
 //user routes
 Route.use('/user/auth', userAuthRoutes);
 Route.use('/user', userRoutes);
+Route.use('/user/subscription', userSubscriptionRoutes);
 
 //user and admin all usertype common routes
 Route.use('/common', commonRoutes);
