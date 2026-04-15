@@ -8,7 +8,7 @@ node_modules/
 dist/
 # Ignore secrets
 public/androidCerts/androidInAppPurchase.json
-
+public/firebase/firebase.sdk.json
 
 # Compiled Java class files
 *.class
